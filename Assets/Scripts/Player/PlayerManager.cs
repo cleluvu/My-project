@@ -1,0 +1,224 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerManager : MonoBehaviour
+{
+    private Rigidbody2D rb;
+    [SerializeField] private float moveSpeed = 5f;
+    private Vector2 targetPosition;
+    private bool movesByMouse = false;
+    private Vector2 movement;
+    private Animator anim;
+    
+    // Update Using Tools
+    public Boolean isActing;
+    public Vector2 lastDirection = Vector2.down;
+    public GameObject attackZone;
+    public int stateTools = 0;
+
+    // Farming manager
+    public FarmingManager farmingManager;
+    public List<GameObject> seeds;
+
+    // Update Player Info
+    Player player;
+
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+        player = GetComponent<Player>();
+    }
+
+    void Start()
+    {
+        if(attackZone != null)
+        {
+            attackZone.SetActive(false);
+        }
+    }
+
+    void Update()
+    {
+        // Update Using Tools
+        if(isActing) return;
+
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+        Vector2 keyboardInput = new Vector2(h, v);
+
+        if (keyboardInput != Vector2.zero)
+        {
+            movement = keyboardInput.normalized;
+            movesByMouse = false; 
+        }
+ 
+        else if (Input.GetMouseButtonDown(0))
+        {
+            targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            movesByMouse = true;
+        }
+
+        if (movesByMouse && keyboardInput == Vector2.zero)
+        {
+            Vector2 direction = targetPosition - (Vector2)transform.position;
+            
+            if (direction.magnitude < 0.1f)
+            {
+                movement = Vector2.zero;
+                movesByMouse = false;
+            }
+            else
+            {
+                movement = direction.normalized;
+            }
+        }
+        else if (keyboardInput == Vector2.zero)
+        {
+            movement = Vector2.zero;
+        }
+
+        UpdateAnimation();
+
+        // Update Using Tools
+        if (stateTools == 1)
+        {
+            StartAction("chop");
+        }
+        if (stateTools == 2)
+        {
+            StartAction("till");
+        }
+        if (stateTools == 3)
+        {
+            StartAction("water");
+        }
+        if(stateTools == 4)
+        {
+            StartAction("plant_wheat");
+        }
+        if(stateTools == 5)
+        {
+            StartAction("plant_tomato");
+        }
+    }
+
+    void UpdateAnimation()
+    {
+        if (movement != Vector2.zero)
+        {
+            // Update using tools
+            lastDirection = movement;
+
+            anim.SetFloat("moveX", movement.x);
+            anim.SetFloat("moveY", movement.y);
+            anim.SetBool("isMoving", true);
+        }
+        else
+        {
+            anim.SetBool("isMoving", false);
+        }
+    }
+
+    public void StartAction(String action)
+    {
+        isActing = true;
+        movement = Vector2.zero;
+        movesByMouse = false;
+        
+        anim.SetFloat("moveX", lastDirection.x);
+        anim.SetFloat("moveY", lastDirection.y);
+
+        if(action == "plant_wheat" || action == "plant_tomato") anim.SetTrigger("till");
+        else anim.SetTrigger(action);
+
+        if(action == "chop" || action == "water")
+        {
+            PositionAttackZone();
+            if(attackZone != null) attackZone.SetActive(true);
+        }
+        else if(action == "till")
+        {
+            Vector3 targetGridPos = GetTargetGridPosition();
+            if(farmingManager != null)
+            {
+                farmingManager.TillGround(targetGridPos);
+            }
+        }
+        else if(action == "plant_wheat")
+        {
+            Vector3 targetGridPos = GetTargetGridPosition();
+            if(farmingManager != null)
+            {
+                farmingManager.PlantSeed(targetGridPos, seeds[0], "Wheat");
+            }
+        }
+        else if(action == "plant_tomato")
+        {
+            Vector3 targetGridPos = GetTargetGridPosition();
+            if(farmingManager != null)
+            {
+                farmingManager.PlantSeed(targetGridPos, seeds[1], "Tomato");
+            }
+        }
+    }
+
+    public Vector3 GetTargetGridPosition()
+    {
+        Vector2 facingDirection = Vector2.zero;
+
+        if(Mathf.Abs(lastDirection.x) > Mathf.Abs(lastDirection.y))
+        {
+            facingDirection = new Vector2(Mathf.Sign(lastDirection.x), 0);
+        }
+        else
+        {
+            facingDirection = new Vector2(0, Mathf.Sign(lastDirection.y));
+        }
+
+        float playerCellX = Mathf.Floor(transform.position.x);
+        float playerCellY = Mathf.Floor(transform.position.y);
+
+        float targetCellX = playerCellX + facingDirection.x;
+        float targetCellY = playerCellY + facingDirection.y;
+
+        return new Vector3(targetCellX + 0.5f, targetCellY + 0.5f, 0);
+    }
+
+    public void PositionAttackZone()
+    {
+        if(attackZone == null) return;
+        Vector2 facingDirection = Vector2.zero;
+        if(Mathf.Abs(lastDirection.x) > Mathf.Abs(lastDirection.y))
+        {
+            facingDirection = new Vector2(Mathf.Sign(lastDirection.x), 0);
+        }
+        else
+        {
+            facingDirection = new Vector2(0, Mathf.Sign(lastDirection.y));
+        }
+
+        Vector3 playerPos = transform.position;
+        PlayerAttackZone playerAttackZone = attackZone.GetComponent<PlayerAttackZone>();
+        attackZone.transform.position = playerPos + (Vector3)(facingDirection * playerAttackZone.attackOffset);
+    }
+
+    public void EndAction()
+    {
+        isActing = false;
+        stateTools = 0;
+        if(attackZone != null)
+        {
+            attackZone.SetActive(false);
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (!isActing)
+        {
+            rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
+        }
+    }
+}

@@ -3,7 +3,12 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Tree
+  - Wood
+  - Stone
+  - Piece of Stone
+  - Plant
   layers:
   - Default
   - TransparentFX
