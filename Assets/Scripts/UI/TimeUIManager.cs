@@ -35,6 +35,7 @@ public class TimeUIManager : MonoBehaviour
 
     void Update()
     {
+        // Tính toán giờ hiển thị
         float timePercent = dayAndNight.currentTime / dayAndNight.dayDuration;
         float hourInGame = timePercent * 24f;
 
@@ -47,57 +48,72 @@ public class TimeUIManager : MonoBehaviour
 
     public void X1SpeedTimeGame()
     {
-        dayAndNight.speedTime = Time.deltaTime;
+        // Chỉnh hệ số nhân về 1 (tốc độ bình thường)
+        dayAndNight.timeMultiplier = 1f;
 
         x1Img.color = Color.yellow;
+        StopAllCoroutines(); 
         StartCoroutine(ScaleButton(x1Rt, Vector3.one * 1.05f));
 
         x2Img.color = Color.white;
-        StartCoroutine(ScaleButton(x2Rt, Vector3.one));
+        x2Rt.localScale = Vector3.one;
 
         x3Img.color = Color.white;
-        StartCoroutine(ScaleButton(x3Rt, Vector3.one));
+        x3Rt.localScale = Vector3.one;
     }
 
     public void X2SpeedTimeGame()
     {
-        dayAndNight.speedTime = Time.deltaTime * 2;
+        // Chỉnh hệ số nhân lên 2 (tốc độ nhanh gấp đôi)
+        dayAndNight.timeMultiplier = 2f;
 
         x2Img.color = Color.yellow;
+        StopAllCoroutines();
         StartCoroutine(ScaleButton(x2Rt, Vector3.one * 1.05f));
 
         x1Img.color = Color.white;
-        StartCoroutine(ScaleButton(x1Rt, Vector3.one));
+        x1Rt.localScale = Vector3.one;
 
         x3Img.color = Color.white;
-        StartCoroutine(ScaleButton(x3Rt, Vector3.one));
+        x3Rt.localScale = Vector3.one;
     }
 
     public void X3SpeedTimeGame()
     {
-        dayAndNight.speedTime = Time.deltaTime * 3;
+        // Chỉnh hệ số nhân lên 3 (tốc độ nhanh gấp ba)
+        dayAndNight.timeMultiplier = 3f;
 
         x3Img.color = Color.yellow;
+        StopAllCoroutines();
         StartCoroutine(ScaleButton(x3Rt, Vector3.one * 1.05f));
 
         x2Img.color = Color.white;
-        StartCoroutine(ScaleButton(x2Rt, Vector3.one));
+        x2Rt.localScale = Vector3.one;
 
         x1Img.color = Color.white;
-        StartCoroutine(ScaleButton(x1Rt, Vector3.one));
+        x1Rt.localScale = Vector3.one;
     }
 
     IEnumerator ScaleButton(RectTransform rt, Vector3 target)
     {
         float time = 0;
         Vector3 start = rt.localScale;
-        while(time < 0.5f)
+        while (time < 0.2f) 
         {
-            rt.localScale = Vector3.Lerp(start, target, time / 0.5f);
-            time += Time.deltaTime;
+            rt.localScale = Vector3.Lerp(start, target, time / 0.2f);
+            time += Time.unscaledDeltaTime; 
             yield return null;
         }
 
         rt.localScale = target;
+    }
+     public void OnSaveButtonClicked()
+    {
+        SaveController.Instance.SaveGame();
+    }
+
+    public void OnLoadButtonClicked()
+    {
+        SaveController.Instance.LoadGame();
     }
 }

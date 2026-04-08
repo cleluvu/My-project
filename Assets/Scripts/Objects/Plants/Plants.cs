@@ -44,7 +44,7 @@ public class Plants : MonoBehaviour
         }
 
         float timeToGrow = dayToGrow * dayAndNight.dayDuration;
-        currentTime += dayAndNight.speedTime;
+        currentTime += dayAndNight.timeMultiplier;
 
         float growPercentage = currentTime / timeToGrow;
         int stateIndex = Mathf.FloorToInt(growPercentage * stateImages.Count);
