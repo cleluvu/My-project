@@ -133,7 +133,7 @@ public class PlayerManager : MonoBehaviour
         if(action == "plant_wheat" || action == "plant_tomato") anim.SetTrigger("till");
         else anim.SetTrigger(action);
 
-        if(action == "chop" || action == "water")
+        if(action == "chop")
         {
             PositionAttackZone();
             if(attackZone != null) attackZone.SetActive(true);
@@ -144,6 +144,14 @@ public class PlayerManager : MonoBehaviour
             if(farmingManager != null)
             {
                 farmingManager.TillGround(targetGridPos);
+            }
+        }
+        else if(action == "water")
+        {
+            Vector3 targetPos = GetTargetGridPosition();
+            if(farmingManager != null)
+            {
+                farmingManager.WaterGround(targetPos);
             }
         }
         else if(action == "plant_wheat")

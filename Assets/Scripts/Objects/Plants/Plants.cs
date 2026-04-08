@@ -7,64 +7,46 @@ public class Plants : MonoBehaviour
     public List<Sprite> stateImages;
     public GameObject offerWater;
     public float dayToGrow = 5;
+
     public PlantType plantType;
     public PlantState plantState;
+
     public float capacity = 5;
+    public bool isWatered = false;
+
     private SpriteRenderer spriteRenderer;
-    private DayAndNight dayAndNight;
-    private float currentTime = 0;
-    private int currentStateIndex = 0;
 
-    void Awake()
-    {   
-        GameObject timeManager = GameObject.Find("TimeManager");
-        dayAndNight = timeManager.GetComponent<DayAndNight>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-    }
-
-    void Start()
+    public void Initialize()
     {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        isWatered = false;
         plantState = PlantState.WithoutWater;
         offerWater.SetActive(true);
-        UpdateSprite();
+        UpdateSprite(0);
     }
 
-    void Update()
+    public void UpdateGrowthState(int newState)
     {
-        if(plantState == PlantState.WithoutWater) return;
-        else
-        {
-            offerWater.SetActive(false);
-        }
-
-        if(currentStateIndex >= stateImages.Count - 1)
+        if(newState >= stateImages.Count - 1)
         {
             plantState = PlantState.Harvesting;
+            UpdateSprite(stateImages.Count - 1);
             return;
         }
-
-        float timeToGrow = dayToGrow * dayAndNight.dayDuration;
-        currentTime += dayAndNight.speedTime;
-
-        float growPercentage = currentTime / timeToGrow;
-        int stateIndex = Mathf.FloorToInt(growPercentage * stateImages.Count);
-        if(stateIndex >= stateImages.Count)
-        {
-            stateIndex = stateImages.Count - 1;
-        }
-
-        if(stateIndex > currentStateIndex)
-        {
-            currentStateIndex = stateIndex;
-            UpdateSprite();
-        }
+        UpdateSprite(newState);
     }
 
-    void UpdateSprite()
+    public void GiveWater()
     {
-        if(stateImages.Count > 0 && currentStateIndex < stateImages.Count)
+        isWatered = true;
+        offerWater.SetActive(false);
+    }
+    
+    void UpdateSprite(int index)
+    {
+        if (stateImages.Count > 0 && index < stateImages.Count)
         {
-            spriteRenderer.sprite = stateImages[currentStateIndex];
+            spriteRenderer.sprite = stateImages[index];
         }
     }
 

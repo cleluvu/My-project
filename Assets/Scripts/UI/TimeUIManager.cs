@@ -47,7 +47,7 @@ public class TimeUIManager : MonoBehaviour
 
     public void X1SpeedTimeGame()
     {
-        dayAndNight.speedTime = Time.deltaTime;
+        dayAndNight.timeMultiplier = 1f;
 
         x1Img.color = Color.yellow;
         StartCoroutine(ScaleButton(x1Rt, Vector3.one * 1.05f));
@@ -61,7 +61,7 @@ public class TimeUIManager : MonoBehaviour
 
     public void X2SpeedTimeGame()
     {
-        dayAndNight.speedTime = Time.deltaTime * 2;
+        dayAndNight.timeMultiplier = 2f;
 
         x2Img.color = Color.yellow;
         StartCoroutine(ScaleButton(x2Rt, Vector3.one * 1.05f));
@@ -75,7 +75,7 @@ public class TimeUIManager : MonoBehaviour
 
     public void X3SpeedTimeGame()
     {
-        dayAndNight.speedTime = Time.deltaTime * 3;
+        dayAndNight.timeMultiplier = 3f;
 
         x3Img.color = Color.yellow;
         StartCoroutine(ScaleButton(x3Rt, Vector3.one * 1.05f));

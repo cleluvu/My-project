@@ -37800,7 +37800,7 @@ MonoBehaviour:
   dayDuration: 20
   currentTime: 0
   day: 0
-  speedTime: 1
+  timeMultiplier: 1
   allTimeFromBegin: 0
 --- !u!4 &432369382
 Transform:
@@ -43115,6 +43115,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soilTilemap: {fileID: 1931979787}
   ruleTile: {fileID: 11400000, guid: d40cab290039aa9438f4f067ea98180b, type: 2}
+  dayAndNight: {fileID: 432369381}
 --- !u!4 &1875422539
 Transform:
   m_ObjectHideFlags: 0

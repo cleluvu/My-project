@@ -9,19 +9,17 @@ public class DayAndNight : MonoBehaviour
     // Fix time
     public float dayDuration = 60f;
     public float currentTime = 0f;
-    public int day = 0;
-    public float speedTime = 1f;
-    public float allTimeFromBegin = 0;
+    public float day = 0;
 
-    void Awake()
-    {
-        speedTime = Time.deltaTime;
-    }
+    public float timeMultiplier = 1f;
+    public float allTimeFromBegin = 0;
 
     void Update()
     {
-        allTimeFromBegin += speedTime;
-        currentTime += speedTime;
+        float timeAdded = Time.deltaTime * timeMultiplier;
+
+        allTimeFromBegin += timeAdded;
+        currentTime += timeAdded;
 
         if(currentTime >= dayDuration)
         {
