@@ -209,7 +209,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Simple Milk and grass item_0: 2948254225124216898
+      Simple Milk and grass item_1: 211033116252206595
+      Simple Milk and grass item_2: -2449982667496561888
+      Simple Milk and grass item_3: 5965478420860110111
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
