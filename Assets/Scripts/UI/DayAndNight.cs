@@ -9,7 +9,7 @@ public class DayAndNight : MonoBehaviour
     // Fix time
     public float dayDuration = 60f;
     public float currentTime = 0f;
-    public float day = 0;
+    public int day = 0;
 
     public float timeMultiplier = 1f;
     public float allTimeFromBegin = 0;
