@@ -41,6 +41,12 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
+        if (PauseController.IsGamePause)
+        {
+            movement = Vector2.zero;
+            return;
+        }
+
         // Update Using Tools
         if(isActing) return;
 
