@@ -47,6 +47,7 @@ public class TimeUIManager : MonoBehaviour
 
     public void X1SpeedTimeGame()
     {
+        Debug.Log("Bấm nút 1");
         dayAndNight.timeMultiplier = 1f;
 
         x1Img.color = Color.yellow;

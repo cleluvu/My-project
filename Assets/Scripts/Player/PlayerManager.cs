@@ -20,11 +20,15 @@ public class PlayerManager : MonoBehaviour
     // Update Player Info
     Player player;
 
+    // check ngủ
+    Bed bed;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         player = GetComponent<Player>();
+        bed = FindAnyObjectByType<Bed>();
     }
 
     void Start()
@@ -37,7 +41,7 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
-        if (PauseController.IsGamePause)
+        if (PauseController.IsGamePause || bed.GetIsSleeping())
         {
             movement = Vector2.zero;
             return;
