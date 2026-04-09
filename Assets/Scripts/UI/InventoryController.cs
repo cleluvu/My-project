@@ -9,7 +9,20 @@ public class InventoryController : MonoBehaviour
     public GameObject slotPrefab;
     public int slotCount;
     public GameObject[] itemPrefab;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    public static InventoryController Instance {get; private set;}
+
+    private void Awake()
+    {
+        if(Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
+
     void Start()
     {
         itemDictionary = FindAnyObjectByType<ItemDictionary>();
@@ -28,6 +41,24 @@ public class InventoryController : MonoBehaviour
 
     public bool AddItem(GameObject itemPrefab)
     {
+        Item itemToAdd = itemPrefab.GetComponent<Item>();
+        if(itemToAdd == null) return false;
+
+        // Kiểm tra xem item đó có trong inventory chưa
+        foreach(Transform slotTransform in inventoryPanel.transform)
+        {
+            Slot slot = slotTransform.GetComponent<Slot>();
+            if(slot != null && slot.currentItem != null)
+            {
+                Item slotItem = slot.currentItem.GetComponent<Item>();
+                if(slotItem != null && slotItem.ID == itemToAdd.ID)
+                {
+                    slotItem.AddToStack();
+                    return true;
+                }
+            }
+        }
+
         // Kiếm slot trống nào đó
         foreach(Transform slotTransform in inventoryPanel.transform)
         {
@@ -48,6 +79,7 @@ public class InventoryController : MonoBehaviour
 
     public List<InventorySaveData> GetInventoryItem()
     {
+        // Lấy thông tin để lưu
         List<InventorySaveData> invData = new List<InventorySaveData>();
         foreach(Transform slotTransform in inventoryPanel.transform)
         {
@@ -55,7 +87,7 @@ public class InventoryController : MonoBehaviour
             if(slot.currentItem != null)
             {
                 Item item = slot.currentItem.GetComponent<Item>();
-                invData.Add(new InventorySaveData {itemID = item.ID, slotIndex = slotTransform.GetSiblingIndex()});
+                invData.Add(new InventorySaveData {itemID = item.ID, slotIndex = slotTransform.GetSiblingIndex(), quantity = item.quantity});
             }
         }
         return invData;
@@ -87,6 +119,14 @@ public class InventoryController : MonoBehaviour
                     GameObject item = Instantiate(itemPrefab, slot.transform);
                     item.transform.localScale = Vector3.one;
                     item.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+
+                    Item itemComponent = item.GetComponent<Item>();
+                    if(itemComponent != null && data.quantity > 1)
+                    {
+                        itemComponent.quantity = data.quantity;
+                        itemComponent.UpdateQuantityDisplay();
+                    }
+
                     slot.currentItem = item;
                 }
             }
