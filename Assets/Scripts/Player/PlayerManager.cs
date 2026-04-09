@@ -10,7 +10,7 @@ public class PlayerManager : MonoBehaviour
     private bool movesByMouse = false;
     private Vector2 movement;
     private Animator anim;
-    
+
     // Update Using Tools
     public Boolean isActing;
     public Vector2 lastDirection = Vector2.down;
@@ -20,6 +20,7 @@ public class PlayerManager : MonoBehaviour
     // Farming manager
     public FarmingManager farmingManager;
     public List<GameObject> seeds;
+    [SerializeField] private float interactRange = 1.5f;
 
     // Update Player Info
     Player player;
@@ -33,7 +34,7 @@ public class PlayerManager : MonoBehaviour
 
     void Start()
     {
-        if(attackZone != null)
+        if (attackZone != null)
         {
             attackZone.SetActive(false);
         }
@@ -42,7 +43,7 @@ public class PlayerManager : MonoBehaviour
     void Update()
     {
         // Update Using Tools
-        if(isActing) return;
+        if (isActing) return;
 
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
@@ -51,9 +52,9 @@ public class PlayerManager : MonoBehaviour
         if (keyboardInput != Vector2.zero)
         {
             movement = keyboardInput.normalized;
-            movesByMouse = false; 
+            movesByMouse = false;
         }
- 
+
         else if (Input.GetMouseButtonDown(0))
         {
             targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -63,7 +64,7 @@ public class PlayerManager : MonoBehaviour
         if (movesByMouse && keyboardInput == Vector2.zero)
         {
             Vector2 direction = targetPosition - (Vector2)transform.position;
-            
+
             if (direction.magnitude < 0.1f)
             {
                 movement = Vector2.zero;
@@ -94,13 +95,18 @@ public class PlayerManager : MonoBehaviour
         {
             StartAction("water");
         }
-        if(stateTools == 4)
+        if (stateTools == 4)
         {
             StartAction("plant_wheat");
         }
-        if(stateTools == 5)
+        if (stateTools == 5)
         {
             StartAction("plant_tomato");
+        }
+        // Kiểm tra nút tương tác E
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            CheckInteraction();
         }
     }
 
@@ -126,38 +132,38 @@ public class PlayerManager : MonoBehaviour
         isActing = true;
         movement = Vector2.zero;
         movesByMouse = false;
-        
+
         anim.SetFloat("moveX", lastDirection.x);
         anim.SetFloat("moveY", lastDirection.y);
 
-        if(action == "plant_wheat" || action == "plant_tomato") anim.SetTrigger("till");
+        if (action == "plant_wheat" || action == "plant_tomato") anim.SetTrigger("till");
         else anim.SetTrigger(action);
 
-        if(action == "chop" || action == "water")
+        if (action == "chop" || action == "water")
         {
             PositionAttackZone();
-            if(attackZone != null) attackZone.SetActive(true);
+            if (attackZone != null) attackZone.SetActive(true);
         }
-        else if(action == "till")
+        else if (action == "till")
         {
             Vector3 targetGridPos = GetTargetGridPosition();
-            if(farmingManager != null)
+            if (farmingManager != null)
             {
                 farmingManager.TillGround(targetGridPos);
             }
         }
-        else if(action == "plant_wheat")
+        else if (action == "plant_wheat")
         {
             Vector3 targetGridPos = GetTargetGridPosition();
-            if(farmingManager != null)
+            if (farmingManager != null)
             {
                 farmingManager.PlantSeed(targetGridPos, seeds[0], "Wheat");
             }
         }
-        else if(action == "plant_tomato")
+        else if (action == "plant_tomato")
         {
             Vector3 targetGridPos = GetTargetGridPosition();
-            if(farmingManager != null)
+            if (farmingManager != null)
             {
                 farmingManager.PlantSeed(targetGridPos, seeds[1], "Tomato");
             }
@@ -168,7 +174,7 @@ public class PlayerManager : MonoBehaviour
     {
         Vector2 facingDirection = Vector2.zero;
 
-        if(Mathf.Abs(lastDirection.x) > Mathf.Abs(lastDirection.y))
+        if (Mathf.Abs(lastDirection.x) > Mathf.Abs(lastDirection.y))
         {
             facingDirection = new Vector2(Mathf.Sign(lastDirection.x), 0);
         }
@@ -188,9 +194,9 @@ public class PlayerManager : MonoBehaviour
 
     public void PositionAttackZone()
     {
-        if(attackZone == null) return;
+        if (attackZone == null) return;
         Vector2 facingDirection = Vector2.zero;
-        if(Mathf.Abs(lastDirection.x) > Mathf.Abs(lastDirection.y))
+        if (Mathf.Abs(lastDirection.x) > Mathf.Abs(lastDirection.y))
         {
             facingDirection = new Vector2(Mathf.Sign(lastDirection.x), 0);
         }
@@ -208,9 +214,27 @@ public class PlayerManager : MonoBehaviour
     {
         isActing = false;
         stateTools = 0;
-        if(attackZone != null)
+        if (attackZone != null)
         {
             attackZone.SetActive(false);
+        }
+    }
+    private void CheckInteraction()
+    {
+        // Tạo một vòng tròn ảo xung quanh Player để tìm vật thể có Collider
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, interactRange);
+
+        foreach (Collider2D collider in colliders)
+        {
+            // Kiểm tra xem GameObject đó có script nào kế thừa IInteractable không
+            IInteractable interactable = collider.GetComponent<IInteractable>();
+
+            if (interactable != null && interactable.CanInteract())
+            {
+                interactable.Interact();
+                // Sau khi tương tác với 1 đứa thì dừng lại luôn, tránh việc nói chuyện với 2 đứa 1 lúc
+                break;
+            }
         }
     }
 
