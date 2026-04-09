@@ -17,10 +17,6 @@ public class PlayerManager : MonoBehaviour
     public GameObject attackZone;
     public int stateTools = 0;
 
-    // Farming manager
-    public FarmingManager farmingManager;
-    public List<GameObject> seeds;
-
     // Update Player Info
     Player player;
 
@@ -91,22 +87,33 @@ public class PlayerManager : MonoBehaviour
         if (stateTools == 1)
         {
             StartAction("chop");
+            PositionAttackZone();
+            if(attackZone != null) attackZone.SetActive(true);
         }
         if (stateTools == 2)
         {
             StartAction("till");
+            Vector3Int cellPos = Vector3Int.FloorToInt(GetTargetGridPosition());
+            FarmingController.Instance.TillSoil(cellPos);
         }
         if (stateTools == 3)
         {
             StartAction("water");
+            Vector3Int cellPos = Vector3Int.FloorToInt(GetTargetGridPosition());
+            FarmingController.Instance.WaterSoil(cellPos);
         }
         if(stateTools == 4)
         {
             StartAction("plant_wheat");
+            Vector3 worldPos = GetTargetGridPosition();
+            Vector3Int cellPos = FarmingController.Instance.farmingTilemap.WorldToCell(worldPos);
+            FarmingController.Instance.PlantSeed(cellPos, "wheat");
         }
         if(stateTools == 5)
         {
             StartAction("plant_tomato");
+            Vector3Int cellPos = Vector3Int.FloorToInt(GetTargetGridPosition());
+            FarmingController.Instance.PlantSeed(cellPos, "tomato");
         }
     }
 
@@ -138,44 +145,6 @@ public class PlayerManager : MonoBehaviour
 
         if(action == "plant_wheat" || action == "plant_tomato") anim.SetTrigger("till");
         else anim.SetTrigger(action);
-
-        if(action == "chop")
-        {
-            PositionAttackZone();
-            if(attackZone != null) attackZone.SetActive(true);
-        }
-        else if(action == "till")
-        {
-            Vector3 targetGridPos = GetTargetGridPosition();
-            if(farmingManager != null)
-            {
-                farmingManager.TillGround(targetGridPos);
-            }
-        }
-        else if(action == "water")
-        {
-            Vector3 targetPos = GetTargetGridPosition();
-            if(farmingManager != null)
-            {
-                farmingManager.WaterGround(targetPos);
-            }
-        }
-        else if(action == "plant_wheat")
-        {
-            Vector3 targetGridPos = GetTargetGridPosition();
-            if(farmingManager != null)
-            {
-                farmingManager.PlantSeed(targetGridPos, seeds[0], "Wheat");
-            }
-        }
-        else if(action == "plant_tomato")
-        {
-            Vector3 targetGridPos = GetTargetGridPosition();
-            if(farmingManager != null)
-            {
-                farmingManager.PlantSeed(targetGridPos, seeds[1], "Tomato");
-            }
-        }
     }
 
     public Vector3 GetTargetGridPosition()

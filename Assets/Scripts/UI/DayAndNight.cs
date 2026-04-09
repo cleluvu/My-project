@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.Events;
 public class DayAndNight : MonoBehaviour
 {
     // Fix light
@@ -14,6 +15,8 @@ public class DayAndNight : MonoBehaviour
     public float timeMultiplier = 1f;
     public float allTimeFromBegin = 0;
 
+    public UnityEvent onNewDayStarted;
+
     void Update()
     {
         float timeAdded = Time.deltaTime * timeMultiplier;
@@ -25,6 +28,7 @@ public class DayAndNight : MonoBehaviour
         {
             currentTime %= dayDuration;
             day += 1;
+            onNewDayStarted?.Invoke();
         }
 
         float timePercent = currentTime / dayDuration;

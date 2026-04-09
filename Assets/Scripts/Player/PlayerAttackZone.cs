@@ -28,18 +28,5 @@ public class PlayerAttackZone : MonoBehaviour
                 stone.GetDamage(1);
             }
         }
-
-        if(collider2D.CompareTag("Plant") && playerManager.stateTools == 3)
-        {
-            Plants plant = collider2D.GetComponent<Plants>();
-            if(plant != null)
-            {
-                if(plant.plantState == PlantState.WithoutWater)
-                {
-                    Debug.Log("Đã tưới nước");
-                    plant.plantState = PlantState.Seed;
-                }
-            }
-        }
     }
 }

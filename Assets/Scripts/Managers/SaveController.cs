@@ -9,6 +9,8 @@ public class SaveController : MonoBehaviour
     private string savePath;
     private InventoryController inventoryController;
 
+    private FarmingController farmingController;
+
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -16,6 +18,7 @@ public class SaveController : MonoBehaviour
 
         savePath = Application.persistentDataPath + "/savegame.json";
         inventoryController = FindAnyObjectByType<InventoryController>();
+        farmingController = FindAnyObjectByType<FarmingController>();
     }
     void Start()
     {
@@ -45,6 +48,20 @@ public class SaveController : MonoBehaviour
             data.inventorySaveData = inventorySaveData;
         }
 
+        // Lưu nông trại
+        if(farmingController != null)
+        {
+            data.farmTileSaveData = farmingController.GetFarmSaveData();
+        }
+
+        // Lưu mấy object có thể bị phá hủy và spawn lại
+        CollectedObject[] resources = FindObjectsByType<CollectedObject>(FindObjectsSortMode.None);
+        data.resourceSaveData = new List<ResourceSaveData>();
+        foreach(CollectedObject res in resources)
+        {
+            data.resourceSaveData.Add(res.GetSaveData());
+        }
+
         // Chuyển thành JSON và lưu file
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(savePath, json);
@@ -72,6 +89,26 @@ public class SaveController : MonoBehaviour
 
         // Load kho đồ
         inventoryController.SetInventoryItem(data.inventorySaveData);
+
+        // Load nông trại
+        if(farmingController != null)
+        {
+            farmingController.RestoreFarmData(data.farmTileSaveData);
+        }
+
+        // Load mấy object có thể bị phá hủy và spawn lại
+        CollectedObject[] resources = FindObjectsByType<CollectedObject>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        if(data.resourceSaveData != null)
+        {
+            foreach(CollectedObject obj in resources)
+            {
+                ResourceSaveData saveData = data.resourceSaveData.Find(r => r.ID == obj.ID);
+                if(saveData != null)
+                {
+                    obj.RestoreData(saveData);
+                }
+            }
+        }
 
         Debug.Log("Đã Load thành công!");
     }
