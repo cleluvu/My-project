@@ -50,6 +50,11 @@ public class PlayerManager : MonoBehaviour
         // Update Using Tools
         if(isActing) return;
 
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            stateTools = 6;
+        }
+
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
         Vector2 keyboardInput = new Vector2(h, v);
@@ -118,6 +123,12 @@ public class PlayerManager : MonoBehaviour
             StartAction("plant_tomato");
             Vector3Int cellPos = Vector3Int.FloorToInt(GetTargetGridPosition());
             FarmingController.Instance.PlantSeed(cellPos, "tomato");
+        }
+        if(stateTools == 6)
+        {
+            StartAction("chop");
+            PositionAttackZone();
+            if(attackZone != null) attackZone.SetActive(true);
         }
     }
 

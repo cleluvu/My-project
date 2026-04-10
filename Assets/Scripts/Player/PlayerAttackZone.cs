@@ -28,5 +28,35 @@ public class PlayerAttackZone : MonoBehaviour
                 stone.GetDamage(1);
             }
         }
+
+        if(playerManager.stateTools == 6)
+        {
+            Entity entity = collider2D.GetComponent<Entity>();
+            if(entity != null)
+            {
+                if (entity.isHungry)
+                {
+                    int requiredFoodID = entity.foodItemID;
+                    if(InventoryController.Instance != null && InventoryController.Instance.HasItem(requiredFoodID))
+                    {
+                        bool feedSuccess = entity.TryFeed(requiredFoodID);
+
+                        if (feedSuccess)
+                        {
+                            InventoryController.Instance.RemoveItem(requiredFoodID, 1);
+                            Debug.Log("Cho ăn thành công");
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("Không có thức ăn");
+                    }
+                }
+                else
+                {
+                    Debug.Log("Chưa đói");
+                }
+            }
+        }
     }
 }

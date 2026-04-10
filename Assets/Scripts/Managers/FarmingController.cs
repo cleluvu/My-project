@@ -70,7 +70,6 @@ public class FarmingController : MonoBehaviour
     // Kiểm soát cây lớn lên
     public void OnDayPassed()
     {
-        Debug.Log("Bắt đầu cho cây lớn");
         List<Vector3Int> tilesToHarvest = new List<Vector3Int>();
 
         foreach(var kvp in farmData)
@@ -94,14 +93,11 @@ public class FarmingController : MonoBehaviour
 
             if(tile.state == SoilState.Watered)
             {
-                Debug.Log("Đất bị khô nè");
                 tile.state = SoilState.Tilled;
             }
 
             UpdateTileVisual(kvp.Key);
         }
-
-        Debug.Log("Thu hoạch nè");
         foreach(Vector3Int pos in tilesToHarvest)
         {
             HarvestCrop(pos);

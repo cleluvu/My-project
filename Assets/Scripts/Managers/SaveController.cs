@@ -62,6 +62,14 @@ public class SaveController : MonoBehaviour
             data.resourceSaveData.Add(res.GetSaveData());
         }
 
+        // Lưu entity trong game
+        Entity[] entities = FindObjectsByType<Entity>(FindObjectsSortMode.None);
+        data.entitySaveData = new List<EntitySaveData>();
+        foreach(Entity e in entities)
+        {
+            data.entitySaveData.Add(e.GetSaveData());
+        }
+
         // Chuyển thành JSON và lưu file
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(savePath, json);
@@ -107,6 +115,17 @@ public class SaveController : MonoBehaviour
                 {
                     obj.RestoreData(saveData);
                 }
+            }
+        }
+
+        // Load các thực thể trong game
+        Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        if(data.entitySaveData != null)
+        {
+            foreach(Entity e in entities)
+            {
+                EntitySaveData eData = data.entitySaveData.Find(x => x.ID == e.ID);
+                if(eData != null) e.RestoreData(eData);
             }
         }
 

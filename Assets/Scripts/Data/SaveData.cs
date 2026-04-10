@@ -10,6 +10,16 @@ public class ResourceSaveData
 }
 
 [System.Serializable]
+public class EntitySaveData
+{
+    public string ID;
+    public Vector3 position;
+    public int daysSinceLastDrop;
+    public int daysFedSinceLastDrop;
+    public bool isHungry;
+}
+
+[System.Serializable]
 public class SaveData
 {
     public Vector3 playerPosition;
@@ -26,4 +36,7 @@ public class SaveData
 
     // Lưu object được sinh lại sau khi phá hủy
     public List<ResourceSaveData> resourceSaveData = new List<ResourceSaveData>(); 
+
+    // Lưu các thực thể trong game
+    public List<EntitySaveData> entitySaveData = new List<EntitySaveData>();
 }

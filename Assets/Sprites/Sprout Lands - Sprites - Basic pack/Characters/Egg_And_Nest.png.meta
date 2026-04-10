@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: 019834425d04170469437797dbd1e475
+guid: f4b98faa9eab19d4c8bbf7d791ac0780
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4929179470246120729
-    second: Egg item_0
+      213: 6373942132520359487
+    second: Egg_And_Nest_0
+  - first:
+      213: 765105606590446433
+    second: Egg_And_Nest_1
+  - first:
+      213: 4338608209347774417
+    second: Egg_And_Nest_2
+  - first:
+      213: -744197992327247199
+    second: Egg_And_Nest_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -51,7 +60,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -100,13 +109,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Egg item_0
+      name: Egg_And_Nest_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 16
-        height: 16
+        x: 3
+        y: 1
+        width: 10
+        height: 10
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +124,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7e2f4d14369089bb0800000000000000
-      internalID: -4929179470246120729
+      spriteID: f3695c3599ac47850800000000000000
+      internalID: 6373942132520359487
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Egg_And_Nest_1
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 3
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16bbb78de733e9a00800000000000000
+      internalID: 765105606590446433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Egg_And_Nest_2
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 0
+        width: 14
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d784c1fd25d53c30800000000000000
+      internalID: 4338608209347774417
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Egg_And_Nest_3
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 0
+        width: 14
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1aa86c07ed31ca5f0800000000000000
+      internalID: -744197992327247199
       vertices: []
       indices: 
       edges: []
@@ -135,7 +210,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Egg item_0: -4929179470246120729
+      Egg_And_Nest_0: 6373942132520359487
+      Egg_And_Nest_1: 765105606590446433
+      Egg_And_Nest_2: 4338608209347774417
+      Egg_And_Nest_3: -744197992327247199
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

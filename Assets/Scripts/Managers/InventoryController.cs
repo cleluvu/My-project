@@ -77,6 +77,30 @@ public class InventoryController : MonoBehaviour
         return false;
     }
 
+    public void RemoveItem(int itemID, int amount)
+    {
+        foreach(Transform slotTransform in inventoryPanel.transform)
+        {
+            Slot slot = slotTransform.GetComponent<Slot>();
+            if(slot != null && slot.currentItem != null)
+            {
+                Item item = slot.currentItem.GetComponent<Item>();
+                if(item != null && item.ID == itemID)
+                {
+                    item.RemoveFromStack(amount);
+
+                    if(item.quantity <= 0)
+                    {
+                        Destroy(slot.currentItem);
+                        slot.currentItem = null;
+                    }
+                    return;
+                }
+            }
+        }
+        Debug.Log("Không tìm thấy item để trừ");
+    }
+
     public List<InventorySaveData> GetInventoryItem()
     {
         // Lấy thông tin để lưu
@@ -131,5 +155,22 @@ public class InventoryController : MonoBehaviour
                 }
             }
         }
+    }
+
+    public bool HasItem(int itemID)
+    {
+        Debug.Log("Check xem có thức ăn không");
+        foreach(Transform slotTransform in inventoryPanel.transform)
+        {
+            Slot slot = slotTransform.GetComponent<Slot>();
+            if(slot != null && slot.currentItem != null)
+            {
+                Item item = slot.currentItem.GetComponent<Item>();
+                if(item != null && item.ID == itemID && item.quantity > 0){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
