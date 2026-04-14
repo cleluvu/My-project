@@ -1,5 +1,23 @@
-using System.Collections.Generic;
+ using System.Collections.Generic;
 using UnityEngine;
+
+[System.Serializable]
+public class ResourceSaveData
+{
+    public string ID;
+    public float hp;
+    public int dayDead;
+}
+
+[System.Serializable]
+public class EntitySaveData
+{
+    public string ID;
+    public Vector3 position;
+    public int daysSinceLastDrop;
+    public int daysFedSinceLastDrop;
+    public bool isHungry;
+}
 
 [System.Serializable]
 public class SaveData
@@ -7,9 +25,18 @@ public class SaveData
     public Vector3 playerPosition;
     public int playerGold;
 
-    public List<InventorySaveData> inventorySaveData = new List<InventorySaveData>();
+    public List<InventorySaveData> inventorySaveData;
 
     public List<string> openedChestIDs = new List<string>();
     public float savedCurrentTime;
     public int savedDay;
+
+    // Lưu nông trại
+    public List<FarmTileData> farmTileSaveData = new List<FarmTileData>();
+
+    // Lưu object được sinh lại sau khi phá hủy
+    public List<ResourceSaveData> resourceSaveData = new List<ResourceSaveData>(); 
+
+    // Lưu các thực thể trong game
+    public List<EntitySaveData> entitySaveData = new List<EntitySaveData>();
 }

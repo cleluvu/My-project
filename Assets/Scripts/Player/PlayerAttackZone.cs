@@ -29,15 +29,32 @@ public class PlayerAttackZone : MonoBehaviour
             }
         }
 
-        if(collider2D.CompareTag("Plant") && playerManager.stateTools == 3)
+        if(playerManager.stateTools == 6)
         {
-            Plants plant = collider2D.GetComponent<Plants>();
-            if(plant != null)
+            Entity entity = collider2D.GetComponent<Entity>();
+            if(entity != null)
             {
-                if(plant.plantState == PlantState.WithoutWater)
+                if (entity.isHungry)
                 {
-                    Debug.Log("Đã tưới nước");
-                    plant.plantState = PlantState.Seed;
+                    int requiredFoodID = entity.foodItemID;
+                    if(InventoryController.Instance != null && InventoryController.Instance.HasItem(requiredFoodID))
+                    {
+                        bool feedSuccess = entity.TryFeed(requiredFoodID);
+
+                        if (feedSuccess)
+                        {
+                            InventoryController.Instance.RemoveItem(requiredFoodID, 1);
+                            Debug.Log("Cho ăn thành công");
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("Không có thức ăn");
+                    }
+                }
+                else
+                {
+                    Debug.Log("Chưa đói");
                 }
             }
         }

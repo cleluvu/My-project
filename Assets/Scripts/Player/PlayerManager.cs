@@ -16,20 +16,20 @@ public class PlayerManager : MonoBehaviour
     public Vector2 lastDirection = Vector2.down;
     public GameObject attackZone;
     public int stateTools = 0;
-
-    // Farming manager
-    public FarmingManager farmingManager;
-    public List<GameObject> seeds;
-    [SerializeField] private float interactRange = 1.5f;
+    [SerializeField] private float interactRange = 2f;
 
     // Update Player Info
     Player player;
+
+    // check ngủ
+    Bed bed;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         player = GetComponent<Player>();
+        bed = FindAnyObjectByType<Bed>();
     }
 
     void Start()
@@ -42,8 +42,19 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
+        if (PauseController.IsGamePause || bed.GetIsSleeping())
+        {
+            movement = Vector2.zero;
+            return;
+        }
+
         // Update Using Tools
         if (isActing) return;
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            stateTools = 6;
+        }
 
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
@@ -86,22 +97,39 @@ public class PlayerManager : MonoBehaviour
         if (stateTools == 1)
         {
             StartAction("chop");
+            PositionAttackZone();
+            if(attackZone != null) attackZone.SetActive(true);
         }
         if (stateTools == 2)
         {
             StartAction("till");
+            Vector3Int cellPos = Vector3Int.FloorToInt(GetTargetGridPosition());
+            FarmingController.Instance.TillSoil(cellPos);
         }
         if (stateTools == 3)
         {
             StartAction("water");
+            Vector3Int cellPos = Vector3Int.FloorToInt(GetTargetGridPosition());
+            FarmingController.Instance.WaterSoil(cellPos);
         }
         if (stateTools == 4)
         {
             StartAction("plant_wheat");
+            Vector3 worldPos = GetTargetGridPosition();
+            Vector3Int cellPos = FarmingController.Instance.farmingTilemap.WorldToCell(worldPos);
+            FarmingController.Instance.PlantSeed(cellPos, "wheat");
         }
         if (stateTools == 5)
         {
             StartAction("plant_tomato");
+            Vector3Int cellPos = Vector3Int.FloorToInt(GetTargetGridPosition());
+            FarmingController.Instance.PlantSeed(cellPos, "tomato");
+        }
+        if(stateTools == 6)
+        {
+            StartAction("chop");
+            PositionAttackZone();
+            if(attackZone != null) attackZone.SetActive(true);
         }
         // Kiểm tra nút tương tác E
         if (Input.GetKeyDown(KeyCode.E))
@@ -138,36 +166,6 @@ public class PlayerManager : MonoBehaviour
 
         if (action == "plant_wheat" || action == "plant_tomato") anim.SetTrigger("till");
         else anim.SetTrigger(action);
-
-        if (action == "chop" || action == "water")
-        {
-            PositionAttackZone();
-            if (attackZone != null) attackZone.SetActive(true);
-        }
-        else if (action == "till")
-        {
-            Vector3 targetGridPos = GetTargetGridPosition();
-            if (farmingManager != null)
-            {
-                farmingManager.TillGround(targetGridPos);
-            }
-        }
-        else if (action == "plant_wheat")
-        {
-            Vector3 targetGridPos = GetTargetGridPosition();
-            if (farmingManager != null)
-            {
-                farmingManager.PlantSeed(targetGridPos, seeds[0], "Wheat");
-            }
-        }
-        else if (action == "plant_tomato")
-        {
-            Vector3 targetGridPos = GetTargetGridPosition();
-            if (farmingManager != null)
-            {
-                farmingManager.PlantSeed(targetGridPos, seeds[1], "Tomato");
-            }
-        }
     }
 
     public Vector3 GetTargetGridPosition()

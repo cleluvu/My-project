@@ -3,12 +3,5 @@ public class InventorySaveData
 {
     public int itemID;
     public int slotIndex;
-    public int quantity;
-
-    public InventorySaveData(int id, int index, int qty)
-    {
-        itemID = id;
-        slotIndex = index;
-        quantity = qty;
-    }
+    public int quantity = 1;
 }

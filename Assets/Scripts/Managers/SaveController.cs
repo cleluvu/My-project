@@ -7,6 +7,9 @@ public class SaveController : MonoBehaviour
     public static SaveController Instance;
 
     private string savePath;
+    private InventoryController inventoryController;
+
+    private FarmingController farmingController;
 
     void Awake()
     {
@@ -14,6 +17,8 @@ public class SaveController : MonoBehaviour
         else Destroy(gameObject);
 
         savePath = Application.persistentDataPath + "/savegame.json";
+        inventoryController = FindAnyObjectByType<InventoryController>();
+        farmingController = FindAnyObjectByType<FarmingController>();
     }
     void Start()
     {
@@ -34,6 +39,35 @@ public class SaveController : MonoBehaviour
         {
             data.savedCurrentTime = dayNight.currentTime;
             data.savedDay = dayNight.day;
+        }
+
+        // Lưu kho đồ
+        List<InventorySaveData> inventorySaveData = inventoryController.GetInventoryItem();
+        if(inventorySaveData != null)
+        {
+            data.inventorySaveData = inventorySaveData;
+        }
+
+        // Lưu nông trại
+        if(farmingController != null)
+        {
+            data.farmTileSaveData = farmingController.GetFarmSaveData();
+        }
+
+        // Lưu mấy object có thể bị phá hủy và spawn lại
+        CollectedObject[] resources = FindObjectsByType<CollectedObject>(FindObjectsSortMode.None);
+        data.resourceSaveData = new List<ResourceSaveData>();
+        foreach(CollectedObject res in resources)
+        {
+            data.resourceSaveData.Add(res.GetSaveData());
+        }
+
+        // Lưu entity trong game
+        Entity[] entities = FindObjectsByType<Entity>(FindObjectsSortMode.None);
+        data.entitySaveData = new List<EntitySaveData>();
+        foreach(Entity e in entities)
+        {
+            data.entitySaveData.Add(e.GetSaveData());
         }
 
         // Chuyển thành JSON và lưu file
@@ -59,6 +93,40 @@ public class SaveController : MonoBehaviour
         {
             dayNight.currentTime = data.savedCurrentTime;
             dayNight.day = data.savedDay;
+        }
+
+        // Load kho đồ
+        inventoryController.SetInventoryItem(data.inventorySaveData);
+
+        // Load nông trại
+        if(farmingController != null)
+        {
+            farmingController.RestoreFarmData(data.farmTileSaveData);
+        }
+
+        // Load mấy object có thể bị phá hủy và spawn lại
+        CollectedObject[] resources = FindObjectsByType<CollectedObject>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        if(data.resourceSaveData != null)
+        {
+            foreach(CollectedObject obj in resources)
+            {
+                ResourceSaveData saveData = data.resourceSaveData.Find(r => r.ID == obj.ID);
+                if(saveData != null)
+                {
+                    obj.RestoreData(saveData);
+                }
+            }
+        }
+
+        // Load các thực thể trong game
+        Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        if(data.entitySaveData != null)
+        {
+            foreach(Entity e in entities)
+            {
+                EntitySaveData eData = data.entitySaveData.Find(x => x.ID == e.ID);
+                if(eData != null) e.RestoreData(eData);
+            }
         }
 
         Debug.Log("Đã Load thành công!");
