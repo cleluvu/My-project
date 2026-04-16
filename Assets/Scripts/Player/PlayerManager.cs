@@ -132,7 +132,7 @@ public class PlayerManager : MonoBehaviour
             if(attackZone != null) attackZone.SetActive(true);
         }
         // Kiểm tra nút tương tác E
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.C))
         {
             CheckInteraction();
         }

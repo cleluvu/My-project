@@ -8,7 +8,7 @@ public class PlayerAttackZone : MonoBehaviour
     {
         Debug.Log("Vào attack zone rồi");
         PlayerManager playerManager = gameObject.GetComponentInParent<PlayerManager>();
-        if(playerManager == null) Debug.Log("Đéo lấy được player");
+        if(playerManager == null) Debug.Log("Không lấy được player");
         if (collider2D.CompareTag("Tree") && playerManager.stateTools == 1)
         {
             Tree tree = collider2D.GetComponent<Tree>();
