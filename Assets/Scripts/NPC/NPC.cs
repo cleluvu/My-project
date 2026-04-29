@@ -16,6 +16,17 @@ public class NPC : MonoBehaviour, IInteractable
 
     private int dialogueIndex;
     private bool isTyping, isDialogueActive;
+    private bool hasValidUIReferences;
+
+    private void Awake()
+    {
+        hasValidUIReferences = dialoguePanel != null && dialogueText != null && nameText != null && portraitImage != null;
+        // Only report missing dialogue UI when this NPC is actually configured for dialogue.
+        if (!hasValidUIReferences && dialogueData != null)
+        {
+            Debug.LogError($"[{nameof(NPC)}] Missing UI references on {gameObject.name}. Please assign Dialogue Panel/Text/Name/Portrait in Inspector.");
+        }
+    }
 
     public bool CanInteract()
     {
@@ -24,7 +35,12 @@ public class NPC : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        if (dialogueData == null || (PauseController.IsGamePause && !isDialogueActive))
+        if (!hasValidUIReferences || dialogueData == null || dialogueData.dialogueLines == null || dialogueData.dialogueLines.Length == 0)
+        {
+            return;
+        }
+
+        if (PauseController.IsGamePause && !isDialogueActive)
             return;
 
         if (isDialogueActive)
@@ -39,6 +55,11 @@ public class NPC : MonoBehaviour, IInteractable
 
     void StartDialogue()
     {
+        if (!hasValidUIReferences)
+        {
+            return;
+        }
+
         isDialogueActive = true;
         dialogueIndex = 0;
 
@@ -53,6 +74,12 @@ public class NPC : MonoBehaviour, IInteractable
 
     void NextLine()
     {
+        if (!hasValidUIReferences || dialogueData == null || dialogueData.dialogueLines == null || dialogueData.dialogueLines.Length == 0)
+        {
+            EndDialogue();
+            return;
+        }
+
         if (isTyping)
         {
             StopAllCoroutines();
@@ -71,6 +98,11 @@ public class NPC : MonoBehaviour, IInteractable
 
     IEnumerator TypeLine()
     {
+        if (!hasValidUIReferences || dialogueData == null || dialogueData.dialogueLines == null || dialogueData.dialogueLines.Length == 0)
+        {
+            yield break;
+        }
+
         isTyping = true;
         dialogueText.text = dialogueData.dialogueLines[dialogueIndex];
         dialogueText.maxVisibleCharacters = 0;
@@ -95,8 +127,17 @@ public class NPC : MonoBehaviour, IInteractable
     {
         StopAllCoroutines();
         isDialogueActive = false;
-        dialogueText.SetText("");
-        dialoguePanel.SetActive(false);
+
+        if (dialogueText != null)
+        {
+            dialogueText.SetText("");
+        }
+
+        if (dialoguePanel != null)
+        {
+            dialoguePanel.SetActive(false);
+        }
+
         PauseController.SetPause(false); 
     }
 }

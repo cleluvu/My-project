@@ -17,6 +17,7 @@ public class PlayerManager : MonoBehaviour
     public GameObject attackZone;
     public int stateTools = 0;
     [SerializeField] private float interactRange = 2f;
+    [SerializeField] private KeyCode interactKey = KeyCode.E;
 
     // Update Player Info
     Player player;
@@ -42,7 +43,8 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
-        if (PauseController.IsGamePause || bed.GetIsSleeping())
+        bool isSleeping = bed != null && bed.GetIsSleeping();
+        if (PauseController.IsGamePause || isSleeping)
         {
             movement = Vector2.zero;
             return;
@@ -50,11 +52,6 @@ public class PlayerManager : MonoBehaviour
 
         // Update Using Tools
         if (isActing) return;
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            stateTools = 6;
-        }
 
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
@@ -68,7 +65,14 @@ public class PlayerManager : MonoBehaviour
 
         else if (Input.GetMouseButtonDown(0))
         {
-            targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Camera mainCam = Camera.main;
+            if (mainCam != null)
+            {
+                Vector3 mousePos = Input.mousePosition;
+                // Keep z in front of camera to avoid invalid ScreenToWorldPoint in perspective setups.
+                mousePos.z = Mathf.Abs(mainCam.transform.position.z);
+                targetPosition = mainCam.ScreenToWorldPoint(mousePos);
+            }
             movesByMouse = true;
         }
 
@@ -125,14 +129,8 @@ public class PlayerManager : MonoBehaviour
             Vector3Int cellPos = Vector3Int.FloorToInt(GetTargetGridPosition());
             FarmingController.Instance.PlantSeed(cellPos, "tomato");
         }
-        if(stateTools == 6)
-        {
-            StartAction("chop");
-            PositionAttackZone();
-            if(attackZone != null) attackZone.SetActive(true);
-        }
-        // Kiểm tra nút tương tác E
-        if (Input.GetKeyDown(KeyCode.C))
+        // Kiểm tra nút tương tác (mặc định E)
+        if (Input.GetKeyDown(interactKey))
         {
             CheckInteraction();
         }
