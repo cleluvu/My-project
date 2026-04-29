@@ -1,2 +1,16 @@
 fileFormatVersion: 2
 guid: 5dcb444abf9cf0e4697061bcaa740c3a
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - farmingTilemap: {instanceID: 0}
+  - cropTilemap: {instanceID: 0}
+  - tilledTile: {instanceID: 0}
+  - wateredTile: {instanceID: 0}
+  - itemDictionary: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
