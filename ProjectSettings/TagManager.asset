@@ -10,6 +10,7 @@ TagManager:
   - Piece of Stone
   - Plant
   - Item
+  - Target
   layers:
   - Default
   - TransparentFX
@@ -17,7 +18,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Obstacles
   - 
   - 
   - 
