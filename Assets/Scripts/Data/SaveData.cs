@@ -23,13 +23,15 @@ public class EntitySaveData
 public class SaveData
 {
     public Vector3 playerPosition;
-    public int playerGold;
 
     public List<InventorySaveData> inventorySaveData;
 
     public List<string> openedChestIDs = new List<string>();
     public float savedCurrentTime;
     public int savedDay;
+
+    // Lưu trạng thái rương kho báu
+    public List<ChestSaveData> chestSaveDatas;
 
     // Lưu nông trại
     public List<FarmTileData> farmTileSaveData = new List<FarmTileData>();
@@ -39,4 +41,30 @@ public class SaveData
 
     // Lưu các thực thể trong game
     public List<EntitySaveData> entitySaveData = new List<EntitySaveData>();
+
+    // Lưu shop
+    public int playerGold;
+    public List<ShopInstanceData> shopStates = new ();
+
+}
+
+[System.Serializable]
+public class ChestSaveData
+{
+    public string chestID;
+    public bool isOpened;
+}
+
+[System.Serializable]
+public class ShopInstanceData
+{
+    public string shopID;
+    public List<ShopItemData> stock = new();
+}
+
+[System.Serializable]
+public class ShopItemData
+{
+    public int itemID;
+    public int quantity;
 }

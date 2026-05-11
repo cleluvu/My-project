@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 47c0fb4636bb4a74189f891c0a7d1c56
+guid: 60ddf57f77c2bbc4bb68438f1a1666d7
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2122837972990275081
-    second: emote22_0
+      213: 4723107735738678597
+    second: Idle_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: emote22_0
+      name: Idle_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 14
-        height: 13
+        width: 16
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7f154306c1a2a82e0800000000000000
-      internalID: -2122837972990275081
+      spriteID: 54d7a982679db8140800000000000000
+      internalID: 4723107735738678597
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Idle_1
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a9b9cf413e0893445a99d8a4b2b51341
+      internalID: -2083616173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Idle_2
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e39dd30044b67ee479960827e84841e4
+      internalID: -402884217
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Idle_3
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bed0c20ba61a9aa4c9324b8ede1046ac
+      internalID: -1894024748
       vertices: []
       indices: 
       edges: []
@@ -125,7 +191,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 485c7c885af7634428c3d46305b10bc2
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +201,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      emote22_0: -2122837972990275081
+      Idle_0: 4723107735738678597
+      Idle_1: -2083616173
+      Idle_2: -402884217
+      Idle_3: -1894024748
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

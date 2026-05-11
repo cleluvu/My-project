@@ -1,15 +1,16 @@
 using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 public class SaveController : MonoBehaviour
 {
     public static SaveController Instance;
-
     private string savePath;
     private InventoryController inventoryController;
-
     private FarmingController farmingController;
+    private Chest[] chests;
+    private ShopNPC[] shops;
 
     void Awake()
     {
@@ -19,7 +20,10 @@ public class SaveController : MonoBehaviour
         savePath = Application.persistentDataPath + "/savegame.json";
         inventoryController = FindAnyObjectByType<InventoryController>();
         farmingController = FindAnyObjectByType<FarmingController>();
+        chests = FindObjectsByType<Chest>(FindObjectsSortMode.None);
+        shops = FindObjectsByType<ShopNPC>(FindObjectsSortMode.None);
     }
+
     void Start()
     {
         LoadGame();
@@ -39,6 +43,13 @@ public class SaveController : MonoBehaviour
         {
             data.savedCurrentTime = dayNight.currentTime;
             data.savedDay = dayNight.day;
+        }
+
+        // Lưu trạng thái rương kho báu
+        List<ChestSaveData> chestSaveDatas = GetChestsState();
+        if(chestSaveDatas != null)
+        {
+            data.chestSaveDatas = chestSaveDatas;
         }
 
         // Lưu kho đồ
@@ -70,10 +81,60 @@ public class SaveController : MonoBehaviour
             data.entitySaveData.Add(e.GetSaveData());
         }
 
+        // Lưu tiền vàng và cửa hàng
+        int playerGold = CurrencyController.Instance.GetGold();
+        List<ShopInstanceData> shopStates = GetShopStates();
+        data.playerGold = playerGold;
+        data.shopStates = shopStates;
+
         // Chuyển thành JSON và lưu file
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(savePath, json);
         Debug.Log("Đã Save vị trí và thời gian!");
+    }
+
+    private List<ShopInstanceData> GetShopStates()
+    {
+        List<ShopInstanceData> shopStates = new List<ShopInstanceData>();
+        foreach(var shop in shops)
+        {
+            ShopInstanceData shopData = new ShopInstanceData
+            {
+                shopID = shop.shopID,
+                stock = new List<ShopItemData>()
+            };
+
+            foreach(var stockItem in shop.GetCurrentStock())
+            {
+                shopData.stock.Add(new ShopItemData
+                {
+                    itemID = stockItem.itemID,
+                    quantity = stockItem.quantity
+                });
+            }
+
+            shopStates.Add(shopData);
+        }
+
+        return shopStates;
+    }
+
+    private List<ChestSaveData> GetChestsState()
+    {
+        List<ChestSaveData> chestStates = new List<ChestSaveData>();
+
+        foreach(Chest chest in chests)
+        {
+            ChestSaveData chestSaveData = new ChestSaveData
+            {
+                chestID = chest.ChestID,
+                isOpened = chest.IsOpened
+            };
+
+            chestStates.Add(chestSaveData);
+        }
+
+        return chestStates;
     }
 
     public void LoadGame()
@@ -94,6 +155,9 @@ public class SaveController : MonoBehaviour
             dayNight.currentTime = data.savedCurrentTime;
             dayNight.day = data.savedDay;
         }
+
+        // Load trạng thái rương kho báu
+        LoadChestState(data.chestSaveDatas);
 
         // Load kho đồ
         inventoryController.SetInventoryItem(data.inventorySaveData);
@@ -129,6 +193,49 @@ public class SaveController : MonoBehaviour
             }
         }
 
+        // Load tiền vàng và cửa hàng
+        LoadShopStates(data.shopStates);
+        CurrencyController.Instance.SetGold(data.playerGold);
+
         Debug.Log("Đã Load thành công!");
+    }
+
+    private void LoadShopStates(List<ShopInstanceData> shopStates)
+    {
+        if(shopStates == null) return;
+
+        foreach(var shop in shops)
+        {
+            ShopInstanceData shopData = shopStates.FirstOrDefault(s => s.shopID == shop.shopID);
+
+            if(shopData != null)
+            {
+                List<ShopNPC.ShopStockItem> loadedStock = new List<ShopNPC.ShopStockItem>();
+
+                foreach(var itemData in shopData.stock)
+                {
+                    loadedStock.Add(new ShopNPC.ShopStockItem
+                    {
+                       itemID = itemData.itemID,
+                       quantity = itemData.quantity 
+                    });
+                }
+
+                shop.SetStock(loadedStock);
+            }
+        }
+    }
+
+    private void LoadChestState(List<ChestSaveData> chestStates)
+    {
+        foreach(Chest chest in chests)
+        {
+            ChestSaveData chestSaveData = chestStates.FirstOrDefault(c => c.chestID == chest.ChestID);
+
+            if(chestSaveData != null)
+            {
+                chest.SetOpened(chestSaveData.isOpened);
+            }
+        }
     }
 }

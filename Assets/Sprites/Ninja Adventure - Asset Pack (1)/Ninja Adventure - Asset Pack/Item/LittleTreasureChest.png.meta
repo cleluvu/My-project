@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: 47c0fb4636bb4a74189f891c0a7d1c56
+guid: fe12d67399f7b8d40a299be47d7d242d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2122837972990275081
-    second: emote22_0
+      213: 8011041516537640387
+    second: LittleTreasureChest_0
+  - first:
+      213: 1144026751516375678
+    second: LittleTreasureChest_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +49,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -100,13 +103,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: emote22_0
+      name: LittleTreasureChest_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 14
-        height: 13
+        width: 16
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +118,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7f154306c1a2a82e0800000000000000
-      internalID: -2122837972990275081
+      spriteID: 3c5f122a0dfec2f60800000000000000
+      internalID: 8011041516537640387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LittleTreasureChest_1
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7a7da9e44660ef00800000000000000
+      internalID: 1144026751516375678
       vertices: []
       indices: 
       edges: []
@@ -125,7 +150,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 28f49329a58bb0f46bf729d8e75ca959
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +160,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      emote22_0: -2122837972990275081
+      LittleTreasureChest_0: 8011041516537640387
+      LittleTreasureChest_1: 1144026751516375678
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
