@@ -23,16 +23,28 @@ public class CollectedObject : MonoBehaviour
     public float shakeDuration = 0.15f;
     public float shakeAngle = 8f;
     private Coroutine currentShake;
+    private bool isDataRestored = false;
 
-    void Start()
+    void Awake()
     {
         maxHP = HP;
         col = GetComponent<Collider2D>();
-        
-        UpdateVisuals();
+    }
 
+    void Start()
+    {
         DayAndNight timeManager = Object.FindFirstObjectByType<DayAndNight>();
         if (timeManager != null) timeManager.onNewDayStarted.AddListener(OnDayPassed);
+        
+        Invoke(nameof(InitialVisualUpdate), 0.05f);
+    }
+
+    private void InitialVisualUpdate()
+    {
+        if (!isDataRestored)
+        {
+            UpdateVisuals();
+        }
     }
 
     private void OnDestroy()
@@ -126,15 +138,9 @@ public class CollectedObject : MonoBehaviour
 
     public void RestoreData(ResourceSaveData data)
     {
+        isDataRestored = true;
         this.HP = data.hp;
         this.daysDead = data.dayDead;
         UpdateVisuals();
-    }
-
-    [ContextMenu("Tạo Unique ID tự động")]
-    private void GenerateUniqueID()
-    {
-        ID = System.Guid.NewGuid().ToString();
-        Debug.Log("Đã tạo ID mới: " + ID);
     }
 }

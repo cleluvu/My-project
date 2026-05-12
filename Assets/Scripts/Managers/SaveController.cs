@@ -2,6 +2,8 @@ using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class SaveController : MonoBehaviour
 {
@@ -14,7 +16,10 @@ public class SaveController : MonoBehaviour
 
     void Awake()
     {
-        if (Instance == null) Instance = this;
+        if (Instance == null){
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
         else Destroy(gameObject);
 
         savePath = Application.persistentDataPath + "/savegame.json";
@@ -22,11 +27,6 @@ public class SaveController : MonoBehaviour
         farmingController = FindAnyObjectByType<FarmingController>();
         chests = FindObjectsByType<Chest>(FindObjectsSortMode.None);
         shops = FindObjectsByType<ShopNPC>(FindObjectsSortMode.None);
-    }
-
-    void Start()
-    {
-        LoadGame();
     }
 
     public void SaveGame()
@@ -54,9 +54,13 @@ public class SaveController : MonoBehaviour
 
         // Lưu kho đồ
         List<InventorySaveData> inventorySaveData = inventoryController.GetInventoryItem();
-        if(inventorySaveData != null)
+        if (inventoryController != null)
         {
-            data.inventorySaveData = inventorySaveData;
+            data.inventorySaveData = inventoryController.GetInventoryItem();
+        }
+        else
+        {
+            Debug.LogWarning("Không tìm thấy InventoryController để lưu!");
         }
 
         // Lưu nông trại
@@ -66,7 +70,7 @@ public class SaveController : MonoBehaviour
         }
 
         // Lưu mấy object có thể bị phá hủy và spawn lại
-        CollectedObject[] resources = FindObjectsByType<CollectedObject>(FindObjectsSortMode.None);
+        CollectedObject[] resources = FindObjectsByType<CollectedObject>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         data.resourceSaveData = new List<ResourceSaveData>();
         foreach(CollectedObject res in resources)
         {
@@ -74,7 +78,7 @@ public class SaveController : MonoBehaviour
         }
 
         // Lưu entity trong game
-        Entity[] entities = FindObjectsByType<Entity>(FindObjectsSortMode.None);
+        Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         data.entitySaveData = new List<EntitySaveData>();
         foreach(Entity e in entities)
         {
@@ -91,6 +95,7 @@ public class SaveController : MonoBehaviour
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(savePath, json);
         Debug.Log("Đã Save vị trí và thời gian!");
+        Debug.Log("Đường dẫn file save: " + Application.persistentDataPath);
     }
 
     private List<ShopInstanceData> GetShopStates()
@@ -237,5 +242,92 @@ public class SaveController : MonoBehaviour
                 chest.SetOpened(chestSaveData.isOpened);
             }
         }
+    }
+
+    public void NewGame()
+    {
+        // Xóa file save cũ 
+        if (File.Exists(savePath))
+        {
+            File.Delete(savePath);
+        }
+        
+        // Đặt lại tiền vàng
+        if (CurrencyController.Instance != null)
+        {
+            CurrencyController.Instance.SetGold(100); 
+        }
+
+        // Đặt lại thời gian
+        DayAndNight dayNight = Object.FindFirstObjectByType<DayAndNight>();
+        if (dayNight != null)
+        {
+            dayNight.day = 1;
+            dayNight.currentTime = 0f;
+        }
+
+        // Đưa Player về vị trí xuất phát mặc định
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            player.transform.position = new Vector3(0, 0, 0); 
+        }
+
+        // Khởi tạo rương đồ
+        if (inventoryController != null)
+        {
+            List<InventorySaveData> startItems = new List<InventorySaveData>();
+            inventoryController.SetInventoryItem(startItems);
+        }
+        else
+        {
+            Debug.Log("Lỗi khởi tạo rương đồ");
+        }
+
+        SaveGame();
+        
+        Debug.Log("Đã khởi tạo Game Mới thành công!");
+    }
+
+    // Xử lý new game
+    public void StartNewGame()
+    {
+        StartCoroutine(NewGameRoutine());
+    }
+
+    private IEnumerator NewGameRoutine()
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("SampleScene");
+        while (!asyncLoad.isDone) yield return null;
+        
+        yield return new WaitForEndOfFrame(); 
+
+        FindAllReferences();
+        NewGame();
+    }
+
+    // Xử lý continue game
+    public void StartContinueGame()
+    {
+        StartCoroutine(ContinueGameRoutine());
+    }
+
+    private IEnumerator ContinueGameRoutine()
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("SampleScene");
+        while (!asyncLoad.isDone) yield return null;
+        
+        yield return new WaitForEndOfFrame(); 
+
+        FindAllReferences();
+        LoadGame();
+    }
+
+    private void FindAllReferences()
+    {
+        inventoryController = FindAnyObjectByType<InventoryController>(FindObjectsInactive.Include);
+        farmingController = FindAnyObjectByType<FarmingController>(FindObjectsInactive.Include);
+        chests = FindObjectsByType<Chest>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        shops = FindObjectsByType<ShopNPC>(FindObjectsInactive.Include, FindObjectsSortMode.None);
     }
 }

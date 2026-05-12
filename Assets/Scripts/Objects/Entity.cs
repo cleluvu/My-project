@@ -148,6 +148,9 @@ public class Entity : MonoBehaviour
         this.daysFedSinceLastDrop = data.daysFedSinceLastDrop;
         this.isHungry = data.isHungry;
 
+        if (dayAndNight == null) dayAndNight = Object.FindAnyObjectByType<DayAndNight>();
+        if (dayAndNight != null) currentDayTracker = dayAndNight.day;
+
         UpdateHungerUI();
     }
 

@@ -93,9 +93,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 741348238c11d364091a605bad4ee546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ID: 
   HP: 2
-  firstVisual: {fileID: 3611718252251522412}
-  lastVisual: {fileID: 7701202903966976355}
+  daysToRespawn: 3
+  daysDead: 0
+  visual: {fileID: 208760075632358708}
+  dropItemID: 3
   shakeDuration: 0.15
   shakeAngle: 8
 --- !u!1 &3611718252251522412
@@ -368,10 +371,5 @@ PrefabInstance:
 --- !u!224 &5853056534035984968 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7839015287810388526, guid: da4f100d2506c934a9b46d1a1c44ccb7, type: 3}
-  m_PrefabInstance: {fileID: 4464190069321039974}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &7701202903966976355 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6274594045127657733, guid: da4f100d2506c934a9b46d1a1c44ccb7, type: 3}
   m_PrefabInstance: {fileID: 4464190069321039974}
   m_PrefabAsset: {fileID: 0}

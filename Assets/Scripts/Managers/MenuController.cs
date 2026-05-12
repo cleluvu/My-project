@@ -6,6 +6,7 @@ public class MenuController : MonoBehaviour
     void Start()
     {
         menuCanvas.SetActive(false);
+        PauseController.SetPause(false);
     }
 
     // Update is called once per frame

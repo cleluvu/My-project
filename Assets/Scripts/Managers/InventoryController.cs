@@ -119,6 +119,24 @@ public class InventoryController : MonoBehaviour
 
     public void SetInventoryItem(List<InventorySaveData> inventorySaveData)
     {
+        // Tự động tìm lại khung UI nếu bị mất kết nối ---
+        if (inventoryPanel == null)
+        {
+            // Tìm object bị ẩn có gắn thẻ định danh
+            InventoryPanelTag uiTag = FindAnyObjectByType<InventoryPanelTag>(FindObjectsInactive.Include);
+            
+            if (uiTag != null)
+            {
+                inventoryPanel = uiTag.gameObject;
+            }
+            else
+            {
+                Debug.LogError("Không tìm thấy InventoryPanelTag! Hãy chắc chắn bạn đã gắn script này vào Panel UI bên SampleScene.");
+                return; // Dừng lại để khỏi văng lỗi
+            }
+        }
+
+
         // Xóa những gì còn xót lại
         foreach(Transform child in inventoryPanel.transform)
         {

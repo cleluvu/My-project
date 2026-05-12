@@ -255,9 +255,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e595bcc0a21739e4f8888d49eab3fe00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ID: 
   HP: 2
-  firstVisual: {fileID: 4009907527444397239}
-  lastVisual: {fileID: 2237391289268266723}
+  daysToRespawn: 3
+  daysDead: 0
+  visual: {fileID: 4984186891289060584}
+  dropItemID: 1
   shakeDuration: 0.15
   shakeAngle: 8
 --- !u!1001 &7247046796782015158
@@ -268,6 +271,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1757482692635532423}
     m_Modifications:
+    - target: {fileID: 1263115315676308320, guid: 0d090d326e23aa547a3320e45db93313, type: 3}
+      propertyPath: ID
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4630951637947944830, guid: 0d090d326e23aa547a3320e45db93313, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -361,11 +368,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0d090d326e23aa547a3320e45db93313, type: 3}
---- !u!1 &2237391289268266723 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8907663970508239957, guid: 0d090d326e23aa547a3320e45db93313, type: 3}
-  m_PrefabInstance: {fileID: 7247046796782015158}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &2654554568816696776 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4630951637947944830, guid: 0d090d326e23aa547a3320e45db93313, type: 3}
