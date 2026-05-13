@@ -91,6 +91,12 @@ public class SaveController : MonoBehaviour
         data.playerGold = playerGold;
         data.shopStates = shopStates;
 
+        // Lưu nhân viên làm thuê
+        if (HireManager.Instance != null)
+        {
+            data.hiredAgentsData = HireManager.Instance.GetSaveData();
+        }
+
         // Chuyển thành JSON và lưu file
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(savePath, json);
@@ -201,6 +207,13 @@ public class SaveController : MonoBehaviour
         // Load tiền vàng và cửa hàng
         LoadShopStates(data.shopStates);
         CurrencyController.Instance.SetGold(data.playerGold);
+
+        // Load nhân viên làm thuê 
+        if (HireManager.Instance != null && data.hiredAgentsData != null && data.hiredAgentsData.Count > 0)
+        {
+            DockStation dock = Object.FindFirstObjectByType<DockStation>();
+            HireManager.Instance.RestoreData(data.hiredAgentsData, dock);
+        }
 
         Debug.Log("Đã Load thành công!");
     }

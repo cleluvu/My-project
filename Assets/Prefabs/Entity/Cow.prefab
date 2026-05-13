@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2020312226714904165}
   - component: {fileID: 3113936970053675008}
   - component: {fileID: 6476859970247369668}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 7947795865546470581}
   - component: {fileID: 7809815871173571099}
   - component: {fileID: 1562866263940298249}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bubble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,9 +174,10 @@ GameObject:
   - component: {fileID: 1258109451124333134}
   - component: {fileID: 5246512970165414635}
   - component: {fileID: 8387429528094607327}
-  m_Layer: 0
+  - component: {fileID: 566089204452510919}
+  m_Layer: 8
   m_Name: Cow
-  m_TagString: Untagged
+  m_TagString: Target
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -190,7 +191,7 @@ Transform:
   m_GameObject: {fileID: 5650241221339155216}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 11.54, y: -3.2, z: 0}
+  m_LocalPosition: {x: 1.296, y: 9.785, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -308,7 +309,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.12044346, y: 0.30538434}
+  m_Offset: {x: -0.12787873, y: 0.025131643}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.13}
@@ -318,7 +319,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.3283672, y: 0.81082976}
+  m_Size: {x: 0.93430316, y: 0.25032437}
   m_EdgeRadius: 0
 --- !u!50 &5246512970165414635
 Rigidbody2D:
@@ -370,6 +371,52 @@ MonoBehaviour:
   hungerBoxUI: {fileID: 2794886254792692620}
   foodIconUI: {fileID: 5498278626762049944}
   footSprite: {fileID: -8553166176874854604, guid: af7f235b842ddc84a868ee2095114bcd, type: 3}
+--- !u!61 &566089204452510919
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5650241221339155216}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0.004183769, y: 0.4645921}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.13}
+    oldSize: {x: 1.8125, y: 1.25}
+    newSize: {x: 0.8125, y: 0.875}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1.7204523, y: 1.1453998}
+  m_EdgeRadius: 0
 --- !u!1 &5860602416584255491
 GameObject:
   m_ObjectHideFlags: 0
@@ -381,7 +428,7 @@ GameObject:
   - component: {fileID: 5530082818956902566}
   - component: {fileID: 5408840718731049576}
   - component: {fileID: 5498278626762049944}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FootIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}

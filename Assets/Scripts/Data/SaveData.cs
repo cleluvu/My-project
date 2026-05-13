@@ -20,6 +20,36 @@ public class EntitySaveData
 }
 
 [System.Serializable]
+public class ChestSaveData
+{
+    public string chestID;
+    public bool isOpened;
+}
+
+[System.Serializable]
+public class ShopInstanceData
+{
+    public string shopID;
+    public List<ShopItemData> stock = new();
+}
+
+[System.Serializable]
+public class ShopItemData
+{
+    public int itemID;
+    public int quantity;
+}
+
+[System.Serializable]
+public class AgentSaveData
+{
+    public string employeeID;
+    public int remainingDays;
+    public Vector3 position;
+}
+
+
+[System.Serializable]
 public class SaveData
 {
     public Vector3 playerPosition;
@@ -46,25 +76,6 @@ public class SaveData
     public int playerGold;
     public List<ShopInstanceData> shopStates = new ();
 
-}
-
-[System.Serializable]
-public class ChestSaveData
-{
-    public string chestID;
-    public bool isOpened;
-}
-
-[System.Serializable]
-public class ShopInstanceData
-{
-    public string shopID;
-    public List<ShopItemData> stock = new();
-}
-
-[System.Serializable]
-public class ShopItemData
-{
-    public int itemID;
-    public int quantity;
+    // Lưu các nhân viên của nông trại
+    public List<AgentSaveData> hiredAgentsData = new List<AgentSaveData>();
 }

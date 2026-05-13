@@ -6,15 +6,13 @@ public class PersistentUI : MonoBehaviour
 
     void Awake()
     {
-        // Đảm bảo chỉ có DUY NHẤT 1 bộ UI tồn tại trong game
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // Ban thẻ bất tử cho UI
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            // Nếu load lại scene mà đã có UI rồi thì hủy bản sao mới đi
             Destroy(gameObject); 
         }
     }

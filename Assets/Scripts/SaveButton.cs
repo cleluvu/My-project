@@ -18,7 +18,6 @@ public class SaveButton : MonoBehaviour
 
         Time.timeScale = 1f;
 
-        // BẢN VÁ LỖI: Tắt hẳn cái Menu này đi trước khi chạy về Home
         if (settingPageToClose != null) 
         {
             settingPageToClose.SetActive(false);

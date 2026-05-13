@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Pathfinding;
 
 public class CollectedObject : MonoBehaviour
 {
@@ -84,6 +85,11 @@ public class CollectedObject : MonoBehaviour
         {
             visual.SetActive(false);
             if(col != null) col.enabled = false;
+        }
+
+        if (AstarPath.active != null && col != null)
+        {
+            AstarPath.active.UpdateGraphs(col.bounds); 
         }
     }
 
