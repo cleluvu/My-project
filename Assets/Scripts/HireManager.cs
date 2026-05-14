@@ -101,6 +101,17 @@ public class HireManager : MonoBehaviour
         }
     }
 
+    public List<AgentTaskManager> GetActiveAgents()
+    {
+        return activeAgents;
+    }
+
+    public EmployeeData GetEmployeeDataByID(string id)
+    {
+        return availableEmployees.Find(e => e.employeeID == id);
+    }
+
+
     public List<AgentSaveData> GetSaveData()
     {
         List<AgentSaveData> saveData = new List<AgentSaveData>();

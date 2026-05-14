@@ -372,4 +372,13 @@ public class AgentTaskManager : MonoBehaviour
             }
         }
     }
+
+    public void FireAgent()
+    {
+        if (isLeaving) return;
+
+        isLeaving = true;
+        ResetAllTargets();
+        Debug.Log($"Nhân viên {gameObject.name} đã bị sa thải!");
+    }
 }

@@ -14,7 +14,6 @@ public class PlayerAttackZone : MonoBehaviour
             Tree tree = collider2D.GetComponent<Tree>();
             if(tree != null)
             {
-                Debug.Log("Chặt cây rồi");
                 tree.GetDamage(1);
             }
         }
@@ -24,7 +23,6 @@ public class PlayerAttackZone : MonoBehaviour
             Stone stone = collider2D.GetComponent<Stone>();
             if(stone != null)
             {
-                Debug.Log("Đào đá rồi");
                 stone.GetDamage(1);
             }
         }
@@ -32,29 +30,26 @@ public class PlayerAttackZone : MonoBehaviour
         if(playerManager.stateTools == 6)
         {
             Entity entity = collider2D.GetComponent<Entity>();
-            if(entity != null)
+            if(entity != null && entity.isHungry)
             {
-                if (entity.isHungry)
-                {
-                    int requiredFoodID = entity.foodItemID;
-                    if(InventoryController.Instance != null && InventoryController.Instance.HasItem(requiredFoodID))
-                    {
-                        bool feedSuccess = entity.TryFeed(requiredFoodID);
+                int requiredFoodID = entity.foodItemID;
 
-                        if (feedSuccess)
-                        {
-                            InventoryController.Instance.RemoveItem(requiredFoodID, 1);
-                            Debug.Log("Cho ăn thành công");
-                        }
-                    }
-                    else
+                HotbarController hotbar = Object.FindFirstObjectByType<HotbarController>();
+                Item equippedItem = hotbar != null ? hotbar.GetEquippedItem() : null;
+
+                if (equippedItem != null && equippedItem.ID == requiredFoodID)
+                {
+                    bool feedSuccess = entity.TryFeed(requiredFoodID);
+                    
+                    if (feedSuccess)
                     {
-                        Debug.Log("Không có thức ăn");
+                        equippedItem.ConsumeOne();
+                        Debug.Log("Cho ăn thành công!");
                     }
                 }
                 else
                 {
-                    Debug.Log("Chưa đói");
+                    Debug.Log($"Không có thức ăn hoặc cầm sai đồ! (Con vật cần Item ID: {requiredFoodID})");
                 }
             }
         }

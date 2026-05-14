@@ -54,7 +54,7 @@ public class FarmingController : MonoBehaviour
         }
     }
 
-    public void PlantSeed(Vector3Int cellPos, string cropID)
+    public bool PlantSeed(Vector3Int cellPos, string cropID)
     {
         if(farmData.TryGetValue(cellPos, out FarmTileData tile))
         {
@@ -63,8 +63,11 @@ public class FarmingController : MonoBehaviour
                 tile.plantedCropID = cropID;
                 tile.currentGrowthStage = 0;
                 UpdateTileVisual(cellPos);
+                return true;
             }
         }
+
+        return false;
     }
 
     // Kiểm soát cây lớn lên

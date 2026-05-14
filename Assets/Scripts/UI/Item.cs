@@ -2,11 +2,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+public enum ItemType { None, Axe, Pickaxe, Hoe, WateringCan, Seed, Food }
+
 public class Item : MonoBehaviour
 {
+    [Header("Item Data")]
     public int ID;
     public string Name;
     public int quantity = 1;
+    public ItemType itemType; 
+    public string seedName; // Nhập "wheat" hoặc "tomato" nếu type là Seed
     private TMP_Text quantityText;
     
     //Shop
@@ -18,6 +23,17 @@ public class Item : MonoBehaviour
     {
         quantityText = GetComponentInChildren<TMP_Text>();
         UpdateQuantityDisplay();
+    }
+
+    public void ConsumeOne()
+    {
+        quantity--;
+        UpdateQuantityDisplay();
+
+        if (quantity <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     public int GetSellPrice()
@@ -64,4 +80,6 @@ public class Item : MonoBehaviour
             ItemPickupUIController.Instance.ShowItemPickup(Name, itemIcon);
         }
     }
+
+
 }

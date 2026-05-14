@@ -54,7 +54,11 @@ public class SaveData
 {
     public Vector3 playerPosition;
 
+    // Lưu kho đồ
     public List<InventorySaveData> inventorySaveData;
+
+    // Lưu hotbar
+    public List<InventorySaveData> hotbarSaveData;
 
     public List<string> openedChestIDs = new List<string>();
     public float savedCurrentTime;

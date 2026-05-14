@@ -10,6 +10,7 @@ public class SaveController : MonoBehaviour
     public static SaveController Instance;
     private string savePath;
     private InventoryController inventoryController;
+    private HotbarController hotbarController;
     private FarmingController farmingController;
     private Chest[] chests;
     private ShopNPC[] shops;
@@ -24,6 +25,7 @@ public class SaveController : MonoBehaviour
 
         savePath = Application.persistentDataPath + "/savegame.json";
         inventoryController = FindAnyObjectByType<InventoryController>();
+        hotbarController = FindAnyObjectByType<HotbarController>();
         farmingController = FindAnyObjectByType<FarmingController>();
         chests = FindObjectsByType<Chest>(FindObjectsSortMode.None);
         shops = FindObjectsByType<ShopNPC>(FindObjectsSortMode.None);
@@ -61,6 +63,17 @@ public class SaveController : MonoBehaviour
         else
         {
             Debug.LogWarning("Không tìm thấy InventoryController để lưu!");
+        }
+
+        // Lưu hotbar
+        List<InventorySaveData> hotbarSaveData = hotbarController.GetHotbarItem();
+        if (inventoryController != null)
+        {
+            data.hotbarSaveData = hotbarController.GetHotbarItem();
+        }
+        else
+        {
+            Debug.LogWarning("Không tìm thấy hotbarController để lưu!");
         }
 
         // Lưu nông trại
@@ -172,6 +185,9 @@ public class SaveController : MonoBehaviour
 
         // Load kho đồ
         inventoryController.SetInventoryItem(data.inventorySaveData);
+
+        // Load hotbar
+        hotbarController.SetHotbarItem(data.hotbarSaveData);
 
         // Load nông trại
         if(farmingController != null)
@@ -297,6 +313,12 @@ public class SaveController : MonoBehaviour
             Debug.Log("Lỗi khởi tạo rương đồ");
         }
 
+        if(hotbarController != null)
+        {
+            List<InventorySaveData> hotbarDatas = new List<InventorySaveData>();
+            hotbarController.SetHotbarItem(hotbarDatas);
+        }
+
         SaveGame();
         
         Debug.Log("Đã khởi tạo Game Mới thành công!");
@@ -339,6 +361,7 @@ public class SaveController : MonoBehaviour
     private void FindAllReferences()
     {
         inventoryController = FindAnyObjectByType<InventoryController>(FindObjectsInactive.Include);
+        hotbarController = FindAnyObjectByType<HotbarController>(FindObjectsInactive.Include);
         farmingController = FindAnyObjectByType<FarmingController>(FindObjectsInactive.Include);
         chests = FindObjectsByType<Chest>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         shops = FindObjectsByType<ShopNPC>(FindObjectsInactive.Include, FindObjectsSortMode.None);
