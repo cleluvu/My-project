@@ -76,16 +76,34 @@ public class ShopController : MonoBehaviour
 
     public void RefreshPlayerInventoryDisplay()
     {
-        if(InventoryController.Instance == null) return;
         foreach(Transform child in playerInventoryGrid) Destroy(child.gameObject);
 
-        foreach(Transform slotTransform in InventoryController.Instance.inventoryPanel.transform)
+        // Lấy đồ từ rương
+        if(InventoryController.Instance != null)
         {
-            Slot inventorySlot = slotTransform.GetComponent<Slot>();
-            if(inventorySlot?.currentItem != null)
+            foreach(Transform slotTransform in InventoryController.Instance.inventoryPanel.transform)
             {
-                Item originalItem = inventorySlot.currentItem.GetComponent<Item>();
-                CreateShopSlot(playerInventoryGrid, originalItem.ID, originalItem.quantity, false, inventorySlot);
+                Slot inventorySlot = slotTransform.GetComponent<Slot>();
+                if(inventorySlot?.currentItem != null)
+                {
+                    Item originalItem = inventorySlot.currentItem.GetComponent<Item>();
+                    CreateShopSlot(playerInventoryGrid, originalItem.ID, originalItem.quantity, false, inventorySlot);
+                }
+            }
+        }
+
+        // Lấy đồ từ thanh công cụ
+        HotbarController hotbar = Object.FindFirstObjectByType<HotbarController>();
+        if (hotbar != null)
+        {
+            foreach(Transform slotTransform in hotbar.hotbarPanel.transform)
+            {
+                Slot hotbarSlot = slotTransform.GetComponent<Slot>();
+                if(hotbarSlot?.currentItem != null)
+                {
+                    Item originalItem = hotbarSlot.currentItem.GetComponent<Item>();
+                    CreateShopSlot(playerInventoryGrid, originalItem.ID, originalItem.quantity, false, hotbarSlot);
+                }
             }
         }
     }
@@ -97,11 +115,14 @@ public class ShopController : MonoBehaviour
         if(itemPrefab == null) return;
 
         GameObject itemInstance= Instantiate(itemPrefab, slotObj.transform);
-        itemInstance.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-
+        
         Item item = itemInstance.GetComponent<Item>();
-        item.quantity = quantity;
-        item.UpdateQuantityDisplay();
+        if (item != null)
+        {
+            item.quantity = quantity;
+            item.UpdateQuantityDisplay();
+            item.SnapToSlot(); 
+        }
 
         int price = isShop ? item.buyPrice : item.GetSellPrice();
 
@@ -111,7 +132,7 @@ public class ShopController : MonoBehaviour
 
         // ItemHandler
         ItemDragHandler dragHandler = itemInstance.GetComponent<ItemDragHandler>();
-        if(dragHandler) dragHandler.enabled = false;
+        if(dragHandler) dragHandler.enabled = false; // Tắt kéo thả khi đang trong Shop
 
         ShopItemHandler handler = itemInstance.AddComponent<ShopItemHandler>();
         handler.Initialize(isShop);

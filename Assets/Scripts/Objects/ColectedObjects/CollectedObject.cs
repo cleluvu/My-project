@@ -57,6 +57,8 @@ public class CollectedObject : MonoBehaviour
     public void GetDamage(float damage)
     {
         if(HP <= 0) return;
+
+        Debug.Log("Dính dame 1 lần");
         
         HP -= damage;
         if(currentShake != null) StopCoroutine(currentShake);

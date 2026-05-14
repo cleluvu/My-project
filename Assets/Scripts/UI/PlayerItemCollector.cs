@@ -3,7 +3,6 @@ using UnityEngine;
 public class PlayerItemCollector : MonoBehaviour
 {
     private InventoryController inventoryController;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         inventoryController = FindAnyObjectByType<InventoryController>();
@@ -23,6 +22,7 @@ public class PlayerItemCollector : MonoBehaviour
                 {
                     item.Pickup();
                     Destroy(collision.gameObject);
+                    Debug.Log("Nhặt item rồi");
                 }
             }
         }

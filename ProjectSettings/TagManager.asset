@@ -22,9 +22,9 @@ TagManager:
   - Obstacles
   - FarmerLayer
   - AnimalLayer
-  - 
-  - 
-  - 
+  - AttackZone
+  - Interaction
+  - Item
   - 
   - 
   - 

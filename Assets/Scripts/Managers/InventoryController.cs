@@ -26,54 +26,73 @@ public class InventoryController : MonoBehaviour
     void Start()
     {
         itemDictionary = FindAnyObjectByType<ItemDictionary>();
-
-        // for(int i = 0; i < slotCount; i++)
-        // {
-        //     Slot slot = Instantiate(slotPrefab, inventoryPanel.transform).GetComponent<Slot>();
-        //     if(i < itemPrefab.Length)
-        //     {
-        //         GameObject item = Instantiate(itemPrefab[i], slot.transform);
-        //         item.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-        //         slot.currentItem = item;
-        //     }
-        // }
     }
 
-    public bool AddItem(GameObject itemPrefab)
+    public bool AddItem(GameObject groundItemObj)
     {
-        Item itemToAdd = itemPrefab.GetComponent<Item>();
-        if(itemToAdd == null) return false;
+        Item groundItem = groundItemObj.GetComponent<Item>();
+        if (groundItem == null) return false;
 
-        // Kiểm tra xem item đó có trong inventory chưa
-        foreach(Transform slotTransform in inventoryPanel.transform)
+        // Tìm chỗ trống trong hotbar trước
+        HotbarController hotbar = Object.FindFirstObjectByType<HotbarController>();
+        
+        if (hotbar != null && TryStackItemInPanel(groundItem, hotbar.hotbarPanel.transform)) return true;
+        if (TryStackItemInPanel(groundItem, inventoryPanel.transform)) return true;
+
+        // Tìm trong rương
+        if (hotbar != null && TryAddToEmptySlotInPanel(groundItem, hotbar.hotbarPanel.transform)) return true;
+        if (TryAddToEmptySlotInPanel(groundItem, inventoryPanel.transform)) return true;
+
+        return false; 
+    }
+
+    // Tìm ô có đồ giống nhau để stack
+    private bool TryStackItemInPanel(Item itemToAdd, Transform panelTransform)
+    {
+        foreach (Transform slotTransform in panelTransform)
         {
             Slot slot = slotTransform.GetComponent<Slot>();
-            if(slot != null && slot.currentItem != null)
+            if (slot != null && slot.currentItem != null)
             {
-                Item slotItem = slot.currentItem.GetComponent<Item>();
-                if(slotItem != null && slotItem.ID == itemToAdd.ID)
+                Item existingItem = slot.currentItem.GetComponent<Item>();
+                if (existingItem.ID == itemToAdd.ID) 
                 {
-                    slotItem.AddToStack();
+                    existingItem.AddToStack(itemToAdd.quantity);
                     return true;
                 }
             }
         }
+        return false;
+    }
 
-        // Kiếm slot trống nào đó
-        foreach(Transform slotTransform in inventoryPanel.transform)
+    // Tìm ô trống
+    private bool TryAddToEmptySlotInPanel(Item itemToAdd, Transform panelTransform)
+    {
+        foreach (Transform slotTransform in panelTransform)
         {
             Slot slot = slotTransform.GetComponent<Slot>();
-            if(slot != null && slot.currentItem == null)
+            if (slot != null && slot.currentItem == null)
             {
-                GameObject newItem = Instantiate(itemPrefab, slot.transform);
-                newItem.transform.localScale = Vector3.one;
-                newItem.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-                slot.currentItem = newItem;
-                return true;
+                ItemDictionary dict = Object.FindFirstObjectByType<ItemDictionary>();
+                GameObject uiPrefab = dict.GetItemPrefab(itemToAdd.ID);
+
+                if (uiPrefab != null)
+                {
+                    GameObject newUIItem = Instantiate(uiPrefab, slot.transform);
+                    Item uiItemScript = newUIItem.GetComponent<Item>();
+                    
+                    if (uiItemScript != null)
+                    {
+                        uiItemScript.quantity = itemToAdd.quantity;
+                        uiItemScript.UpdateQuantityDisplay();
+                        uiItemScript.SnapToSlot();
+                    }
+                    
+                    slot.currentItem = newUIItem;
+                    return true;
+                }
             }
         }
-
-        Debug.Log("Thêm item thất bại");
         return false;
     }
 
@@ -119,10 +138,8 @@ public class InventoryController : MonoBehaviour
 
     public void SetInventoryItem(List<InventorySaveData> inventorySaveData)
     {
-        // Tự động tìm lại khung UI nếu bị mất kết nối ---
         if (inventoryPanel == null)
         {
-            // Tìm object bị ẩn có gắn thẻ định danh
             InventoryPanelTag uiTag = FindAnyObjectByType<InventoryPanelTag>(FindObjectsInactive.Include);
             
             if (uiTag != null)
@@ -132,7 +149,7 @@ public class InventoryController : MonoBehaviour
             else
             {
                 Debug.LogError("Không tìm thấy InventoryPanelTag! Hãy chắc chắn bạn đã gắn script này vào Panel UI bên SampleScene.");
-                return; // Dừng lại để khỏi văng lỗi
+                return;
             }
         }
 
@@ -163,6 +180,7 @@ public class InventoryController : MonoBehaviour
                     item.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
                     Item itemComponent = item.GetComponent<Item>();
+                    itemComponent.SnapToSlot();
                     if(itemComponent != null && data.quantity > 1)
                     {
                         itemComponent.quantity = data.quantity;
@@ -190,5 +208,50 @@ public class InventoryController : MonoBehaviour
             }
         }
         return false;
+    }
+
+    public bool HasItemGlobal(int itemID)
+    {
+        // Check kho đồ
+        if (HasItem(itemID)) return true;
+
+        // Check hotbar
+        HotbarController hotbar = Object.FindFirstObjectByType<HotbarController>();
+        if (hotbar != null)
+        {
+            var hotbarItems = hotbar.GetHotbarItem();
+            return hotbarItems.Exists(x => x.itemID == itemID);
+        }
+
+        return false;
+    }
+
+    public void RemoveItemGlobal(int itemID, int amount)
+    {
+        // Trừ trong kho đồ trước
+        if (HasItem(itemID))
+        {
+            RemoveItem(itemID, amount);
+            return;
+        }
+
+        // Trừ trong hotbar
+        HotbarController hotbar = Object.FindFirstObjectByType<HotbarController>();
+        if (hotbar != null)
+        {
+            foreach (Transform slotTransform in hotbar.hotbarPanel.transform)
+            {
+                Slot slot = slotTransform.GetComponent<Slot>();
+                if (slot.currentItem != null)
+                {
+                    Item item = slot.currentItem.GetComponent<Item>();
+                    if (item.ID == itemID)
+                    {
+                        for(int i = 0; i < amount; i++) item.ConsumeOne();
+                        return;
+                    }
+                }
+            }
+        }
     }
 }

@@ -11,7 +11,7 @@ public class Item : MonoBehaviour
     public string Name;
     public int quantity = 1;
     public ItemType itemType; 
-    public string seedName; // Nhập "wheat" hoặc "tomato" nếu type là Seed
+    public string seedName; 
     private TMP_Text quantityText;
     
     //Shop
@@ -81,5 +81,21 @@ public class Item : MonoBehaviour
         }
     }
 
-
+    public void SnapToSlot()
+    {
+        RectTransform rect = GetComponent<RectTransform>();
+        if (rect != null)
+        {
+            rect.localScale = Vector3.one;
+            
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            
+            float padding = 5f; 
+            rect.offsetMin = new Vector2(padding, padding);
+            rect.offsetMax = new Vector2(-padding, -padding);
+            
+            rect.anchoredPosition = Vector2.zero; 
+        }
+    }
 }

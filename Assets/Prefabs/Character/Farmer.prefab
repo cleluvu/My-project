@@ -361,4 +361,8 @@ MonoBehaviour:
   role: 1
   homeTarget: {fileID: 0}
   seedToPlantID: wheat
+  seedID: 7
   hitCooldown: 1
+  hiredEmployeeID: 
+  remainingDays: 0
+  isLeaving: 0

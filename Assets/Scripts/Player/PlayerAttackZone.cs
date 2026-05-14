@@ -1,55 +1,66 @@
-using Unity.VisualScripting;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerAttackZone : MonoBehaviour
 {
     public float attackOffset = 0.5f;
+    private List<GameObject> hitObjects = new List<GameObject>();
+
+    private void OnEnable()
+    {
+        hitObjects.Clear();
+    }
+
     private void OnTriggerEnter2D(Collider2D collider2D)
     {
-        Debug.Log("Vào attack zone rồi");
         PlayerManager playerManager = gameObject.GetComponentInParent<PlayerManager>();
-        if(playerManager == null) Debug.Log("Đéo lấy được player");
+        if (playerManager == null) return;
+
+        if (hitObjects.Contains(collider2D.gameObject)) return;
+
+        // Chặt cây
         if (collider2D.CompareTag("Tree") && playerManager.stateTools == 1)
         {
-            Tree tree = collider2D.GetComponent<Tree>();
-            if(tree != null)
+            CollectedObject resource = collider2D.GetComponent<CollectedObject>();
+            if (resource != null)
             {
-                tree.GetDamage(1);
+                hitObjects.Add(collider2D.gameObject);
+                Debug.Log("CHẶT CÂY THÀNH CÔNG!");
+                resource.GetDamage(1);
             }
         }
 
+        // Phá đá
         if (collider2D.CompareTag("Stone") && playerManager.stateTools == 1)
         {
-            Stone stone = collider2D.GetComponent<Stone>();
-            if(stone != null)
+            CollectedObject resource = collider2D.GetComponent<CollectedObject>();
+            if (resource != null)
             {
-                stone.GetDamage(1);
+                hitObjects.Add(collider2D.gameObject);
+                Debug.Log("ĐÀO ĐÁ THÀNH CÔNG!");
+                resource.GetDamage(1);
             }
         }
 
-        if(playerManager.stateTools == 6)
+        // Cho động vật ăn
+        if (playerManager.stateTools == 6)
         {
             Entity entity = collider2D.GetComponent<Entity>();
-            if(entity != null && entity.isHungry)
+            if (entity != null && entity.isHungry)
             {
                 int requiredFoodID = entity.foodItemID;
-
                 HotbarController hotbar = Object.FindFirstObjectByType<HotbarController>();
                 Item equippedItem = hotbar != null ? hotbar.GetEquippedItem() : null;
 
                 if (equippedItem != null && equippedItem.ID == requiredFoodID)
                 {
+                    hitObjects.Add(collider2D.gameObject);
                     bool feedSuccess = entity.TryFeed(requiredFoodID);
-                    
                     if (feedSuccess)
                     {
                         equippedItem.ConsumeOne();
                         Debug.Log("Cho ăn thành công!");
                     }
-                }
-                else
-                {
-                    Debug.Log($"Không có thức ăn hoặc cầm sai đồ! (Con vật cần Item ID: {requiredFoodID})");
                 }
             }
         }

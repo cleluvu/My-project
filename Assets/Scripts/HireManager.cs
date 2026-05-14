@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI; // QUAN TRỌNG: Phải có dòng này để dùng được Button
 
 public class HireManager : MonoBehaviour
 {
@@ -10,15 +11,22 @@ public class HireManager : MonoBehaviour
     public Transform employeeContainer; 
     public GameObject employeeSlotPrefab; 
 
+    [Header("Pagination UI")]
+    public Button nextButton;
+    public Button prevButton;
+
     [Header("System")]
     public int maxAgents = 5;
     public List<EmployeeData> availableEmployees; 
+    
+    [Header("Pagination Settings")]
+    public int itemsPerPage = 3;
+    private int currentPage = 0;
 
     [Header("Farm Settings")]
     public Transform defaultEmployeeHome;
 
     private DockStation currentDock;
-
     private List<AgentTaskManager> activeAgents = new List<AgentTaskManager>();
 
     private void Awake()
@@ -27,12 +35,17 @@ public class HireManager : MonoBehaviour
         else Destroy(gameObject);
 
         hirePanel.SetActive(false);
+
+        if (nextButton != null) nextButton.onClick.AddListener(NextPage);
+        if (prevButton != null) prevButton.onClick.AddListener(PrevPage);
     }
 
     public void OpenHireUI(DockStation dock)
     {
         currentDock = dock;
         hirePanel.SetActive(true);
+        
+        currentPage = 0; 
         GenerateEmployeeSlots();
     }
 
@@ -44,21 +57,47 @@ public class HireManager : MonoBehaviour
 
     private void GenerateEmployeeSlots()
     {
-        // Clear mấy cái thẻ cũ
+        // Bỏ các thẻ cũ
         foreach (Transform child in employeeContainer)
         {
             Destroy(child.gameObject);
         }
 
-        // Sinh ra thẻ mới
-        foreach (EmployeeData emp in availableEmployees)
+        // Tính toán đầu cuối cho danh sách
+        int startIndex = currentPage * itemsPerPage;
+        int endIndex = Mathf.Min(startIndex + itemsPerPage, availableEmployees.Count);
+
+        // Sinh ra danh sách theo dộ dài danh sách
+        for (int i = startIndex; i < endIndex; i++)
         {
+            EmployeeData emp = availableEmployees[i];
             GameObject slotObj = Instantiate(employeeSlotPrefab, employeeContainer);
             EmployeeSlotUI slotUI = slotObj.GetComponent<EmployeeSlotUI>();
             if (slotUI != null)
             {
                 slotUI.Setup(emp, this);
             }
+        }
+
+        if (prevButton != null) prevButton.interactable = (currentPage > 0);
+        if (nextButton != null) nextButton.interactable = (endIndex < availableEmployees.Count);
+    }
+
+    public void NextPage()
+    {
+        if ((currentPage + 1) * itemsPerPage < availableEmployees.Count)
+        {
+            currentPage++;
+            GenerateEmployeeSlots();
+        }
+    }
+
+    public void PrevPage()
+    {
+        if (currentPage > 0)
+        {
+            currentPage--;
+            GenerateEmployeeSlots(); 
         }
     }
 
@@ -110,7 +149,6 @@ public class HireManager : MonoBehaviour
     {
         return availableEmployees.Find(e => e.employeeID == id);
     }
-
 
     public List<AgentSaveData> GetSaveData()
     {

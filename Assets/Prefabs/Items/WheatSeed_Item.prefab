@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 2421247120568365171}
   - component: {fileID: 8181156273339242643}
   - component: {fileID: 1897409496325169523}
-  m_Layer: 5
+  m_Layer: 11
   m_Name: WheatSeed_Item
   m_TagString: Item
   m_Icon: {fileID: 0}
@@ -74,7 +74,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 8474670595409141939, guid: af7f235b842ddc84a868ee2095114bcd, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -265,10 +265,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 8890457166638631218}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -15, y: 15}
-  m_SizeDelta: {x: 30, y: 30}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4895253707614269651
 CanvasRenderer:
@@ -300,8 +300,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 1
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 79cec6e28aeaa2f4d97aec2d863a19f2, type: 2}
+  m_sharedMaterial: {fileID: 6456350934492297628, guid: 79cec6e28aeaa2f4d97aec2d863a19f2, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -325,12 +325,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
+  m_fontSize: 32.1
   m_fontSizeBase: 20
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 5
+  m_fontSizeMax: 100
   m_fontStyle: 0
   m_HorizontalAlignment: 4
   m_VerticalAlignment: 1024

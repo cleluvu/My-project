@@ -124,6 +124,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5437165825944083181, guid: 0d090d326e23aa547a3320e45db93313, type: 3}
+      propertyPath: m_PreserveAspect
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8907663970508239957, guid: 0d090d326e23aa547a3320e45db93313, type: 3}
       propertyPath: m_Name
       value: Wheat_Item

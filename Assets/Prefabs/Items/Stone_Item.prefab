@@ -116,6 +116,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6699594393095108262, guid: e0761cc353cd5a947aeab427c26f9ccc, type: 3}
+      propertyPath: m_PreserveAspect
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7787688266317944862, guid: e0761cc353cd5a947aeab427c26f9ccc, type: 3}
       propertyPath: m_Name
       value: Stone_Item

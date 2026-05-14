@@ -30,6 +30,7 @@ public class AgentTaskManager : MonoBehaviour
     
     [Header("Cấu hình Trồng trọt")]
     public string seedToPlantID; 
+    public int seedID;
 
     [Header("Cấu hình Khai thác")]
     public float hitCooldown = 1f; 
@@ -90,9 +91,10 @@ public class AgentTaskManager : MonoBehaviour
 
     public Transform GetActiveTarget()
     {
+        // Bị sa thải
         if (isLeaving && dockTarget != null) return dockTarget;
 
-        // Setup thời gian làm việc
+        // Quản lý thời gian làm việc
         DayAndNight dayAndNight = Object.FindAnyObjectByType<DayAndNight>();
         bool isWorkTime = false; 
         if (dayAndNight != null)
@@ -101,17 +103,18 @@ public class AgentTaskManager : MonoBehaviour
             isWorkTime = (currentHour >= 6f && currentHour <= 21f);
         }
 
+        // Đi về 
         if (!isWorkTime) 
         {
             ResetAllTargets();
             return homeTarget;
         }
 
-        // Xác định vật nuôi
+        // Xác định chỗ con vật
         if (role == AgentRole.AnimalCaretaker)
         {
             if (currentTargetEntity != null && currentTargetEntity.isHungry && 
-                InventoryController.Instance != null && InventoryController.Instance.HasItem(currentTargetEntity.foodItemID))
+                InventoryController.Instance != null && InventoryController.Instance.HasItemGlobal(currentTargetEntity.foodItemID))
                 return currentTargetEntity.transform;
             
             ResetAllTargets(); 
@@ -122,7 +125,7 @@ public class AgentTaskManager : MonoBehaviour
             foreach (Entity entity in allEntities)
             {
                 if (entity.isHungry && !claimedEntities.Contains(entity) && 
-                    InventoryController.Instance != null && InventoryController.Instance.HasItem(entity.foodItemID))
+                    InventoryController.Instance != null && InventoryController.Instance.HasItemGlobal(entity.foodItemID))
                 {
                     float distance = Vector2.Distance(transform.position, entity.transform.position);
                     if (distance < closestDist)
@@ -140,7 +143,7 @@ public class AgentTaskManager : MonoBehaviour
             }
         }
 
-        // Xác định vị trí cây trồng
+        // Xác định chỗ cây trồng
         else if (role == AgentRole.Farmer)
         {
             List<FarmTileData> farmDataList = FarmingController.Instance.GetFarmSaveData();
@@ -153,7 +156,7 @@ public class AgentTaskManager : MonoBehaviour
                     if (tile.position == currentTargetTile.Value)
                     {
                         if (currentFarmAction == FarmAction.Watering && tile.state == SoilState.Tilled && !string.IsNullOrEmpty(tile.plantedCropID)) stillValid = true;
-                        else if (currentFarmAction == FarmAction.Planting && (tile.state == SoilState.Tilled || tile.state == SoilState.Watered) && string.IsNullOrEmpty(tile.plantedCropID)) stillValid = true;
+                        else if (currentFarmAction == FarmAction.Planting && (tile.state == SoilState.Tilled || tile.state == SoilState.Watered) && string.IsNullOrEmpty(tile.plantedCropID) && InventoryController.Instance.HasItemGlobal(seedID)) stillValid = true;
                         break;
                     }
                 }
@@ -165,6 +168,7 @@ public class AgentTaskManager : MonoBehaviour
             FarmAction bestAction = FarmAction.None;
             float closestDist = Mathf.Infinity;
 
+            // Tìm đất để tưới
             foreach (var tile in farmDataList)
             {
                 if (tile.state == SoilState.Tilled && !string.IsNullOrEmpty(tile.plantedCropID) && !claimedTiles.Contains(tile.position))
@@ -181,7 +185,8 @@ public class AgentTaskManager : MonoBehaviour
                 }
             }
 
-            if (!bestTile.HasValue && !string.IsNullOrEmpty(seedToPlantID))
+            // Tìm đất để trồng
+            if (!bestTile.HasValue && !string.IsNullOrEmpty(seedToPlantID) && InventoryController.Instance.HasItemGlobal(seedID))
             {
                 closestDist = Mathf.Infinity;
                 foreach (var tile in farmDataList)
@@ -210,7 +215,7 @@ public class AgentTaskManager : MonoBehaviour
             }
         }
 
-        // Xác định vị trí tài nguyên
+        // Đi khai thác và nhặt đồ
         else if (role == AgentRole.Gatherer)
         {
             if (currentTargetResource != null && currentTargetResource.HP > 0) return currentTargetResource.transform;
@@ -238,33 +243,31 @@ public class AgentTaskManager : MonoBehaviour
                 claimedResources.Add(bestResource); 
                 return currentTargetResource.transform;
             }
-        }
 
-        // Xác định vị trí item
-        if (currentTargetItem != null && currentTargetItem.gameObject.activeInHierarchy) return currentTargetItem.transform;
+            if (currentTargetItem != null && currentTargetItem.gameObject.activeInHierarchy) return currentTargetItem.transform;
 
-        ResetAllTargets(); 
-        Item bestItem = null;
-        float closestItemDist = Mathf.Infinity;
-        Item[] allItems = Object.FindObjectsByType<Item>(FindObjectsSortMode.None);
+            Item bestItem = null;
+            float closestItemDist = Mathf.Infinity;
+            Item[] allItems = Object.FindObjectsByType<Item>(FindObjectsSortMode.None);
 
-        foreach (Item item in allItems)
-        {
-            if (item.CompareTag("Item") && !claimedItems.Contains(item)) 
+            foreach (Item item in allItems)
             {
-                float distance = Vector2.Distance(transform.position, item.transform.position);
-                if (distance < closestItemDist)
+                if (item.CompareTag("Item") && !claimedItems.Contains(item)) 
                 {
-                    closestItemDist = distance;
-                    bestItem = item;
+                    float distance = Vector2.Distance(transform.position, item.transform.position);
+                    if (distance < closestItemDist)
+                    {
+                        closestItemDist = distance;
+                        bestItem = item;
+                    }
                 }
             }
-        }
-        if (bestItem != null) 
-        {
-            currentTargetItem = bestItem;
-            claimedItems.Add(bestItem); 
-            return currentTargetItem.transform;
+            if (bestItem != null) 
+            {
+                currentTargetItem = bestItem;
+                claimedItems.Add(bestItem); 
+                return currentTargetItem.transform;
+            }
         }
 
         return homeTarget;
@@ -298,8 +301,7 @@ public class AgentTaskManager : MonoBehaviour
             return;
         }
 
-
-        // Tiến hành thu hoạch
+        // Làm nông
         if (role == AgentRole.Farmer && currentTargetTile.HasValue)
         {
             float distToTile = Vector2.Distance(transform.position, dummyMarker.position);
@@ -307,10 +309,29 @@ public class AgentTaskManager : MonoBehaviour
             {
                 myAgent.TriggerActionAnim();
 
-                if (currentFarmAction == FarmAction.Watering) FarmingController.Instance.WaterSoil(currentTargetTile.Value);
-                else if (currentFarmAction == FarmAction.Planting) FarmingController.Instance.PlantSeed(currentTargetTile.Value, seedToPlantID);
+                if (currentFarmAction == FarmAction.Watering) 
+                {
+                    FarmingController.Instance.WaterSoil(currentTargetTile.Value);
+                }
+                else if (currentFarmAction == FarmAction.Planting) 
+                {
+                    if (InventoryController.Instance.HasItemGlobal(seedID))
+                    {
+                        bool isPlanted = FarmingController.Instance.PlantSeed(currentTargetTile.Value, seedToPlantID);
+                        
+                        if (isPlanted)
+                        {
+                            InventoryController.Instance.RemoveItemGlobal(seedID, 1);
+                            Debug.Log("Farmer đã trồng và trừ đi 1 hạt giống!");
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("Farmer không còn hạt giống để trồng! Đang bỏ qua...");
+                    }
+                }
                 
-                ResetAllTargets(); 
+                ResetAllTargets();
             }
         }
 
@@ -337,26 +358,26 @@ public class AgentTaskManager : MonoBehaviour
     {
         Transform currentGoal = GetActiveTarget();
 
-        // Tiến hành cho động vật ăn
+        // Cho động vật ăn
         if (role == AgentRole.AnimalCaretaker && collision.CompareTag("Target") && currentTargetEntity != null && currentGoal == currentTargetEntity.transform) 
         {
             Entity entity = collision.GetComponent<Entity>();
             if (entity != null && entity == currentTargetEntity && entity.isHungry)
             {
                 int requiredFoodID = entity.foodItemID;
-                if (InventoryController.Instance.HasItem(requiredFoodID))
+                if (InventoryController.Instance.HasItemGlobal(requiredFoodID))
                 {
                     if (entity.TryFeed(requiredFoodID))
                     {
                         myAgent.TriggerActionAnim();
-                        InventoryController.Instance.RemoveItem(requiredFoodID, 1);
+                        InventoryController.Instance.RemoveItemGlobal(requiredFoodID, 1);
                         ResetAllTargets(); 
                     }
                 }
             }
         }
 
-        // Tiến hành nhặt Item
+        // Nhặt Item
         else if (collision.CompareTag("Item") && currentTargetItem != null && currentGoal == currentTargetItem.transform)
         {
             Item groundItem = collision.GetComponent<Item>();

@@ -12,6 +12,10 @@ public class HotbarController : MonoBehaviour
     [Header("Minecraft Mechanic")]
     public int selectedSlotIndex = 0;
 
+    [Header("Highlight Settings")]
+    public Color normalColor = Color.white;
+    public Color highlightColor = Color.yellow;
+
     private ItemDictionary itemDictionary;
 
     private Key[] hotbarKeys;
@@ -39,6 +43,17 @@ public class HotbarController : MonoBehaviour
     void SelectSlot(int idx)
     {
         selectedSlotIndex = idx;
+        
+        for (int i = 0; i < slotCount; i++)
+        {
+            UnityEngine.UI.Image slotImage = hotbarPanel.transform.GetChild(i).GetComponent<UnityEngine.UI.Image>();
+            
+            if (slotImage != null)
+            {
+                slotImage.color = (i == selectedSlotIndex) ? highlightColor : normalColor;
+            }
+        }
+
         Debug.Log("Đang cầm vật phẩm ở ô số: " + (idx + 1));
     }
 
@@ -72,32 +87,20 @@ public class HotbarController : MonoBehaviour
         if (hotbarPanel == null)
         {
             InventoryPanelTag uiTag = FindAnyObjectByType<InventoryPanelTag>(FindObjectsInactive.Include);
-            
-            if (uiTag != null)
-            {
-                hotbarPanel = uiTag.gameObject;
-            }
-            else
-            {
-                Debug.LogError("Không tìm thấy InventoryPanelTag! Hãy chắc chắn bạn đã gắn script này vào Panel UI bên SampleScene.");
-                return;
-            }
+            if (uiTag != null) hotbarPanel = uiTag.gameObject;
+            else return; 
         }
 
-
-        // Xóa những gì còn xót lại
-        foreach(Transform child in hotbarPanel.transform)
+        for (int i = 0; i < slotCount; i++)
         {
-            Destroy(child.gameObject);
+            Slot slot = hotbarPanel.transform.GetChild(i).GetComponent<Slot>();
+            if (slot.currentItem != null)
+            {
+                Destroy(slot.currentItem);
+                slot.currentItem = null; 
+            }
         }
 
-        // Tạo slot mới
-        for(int i = 0; i < slotCount; i++)
-        {
-            Instantiate(slotPrefab, hotbarPanel.transform);
-        }
-
-        // Gắn slot với item
         foreach(InventorySaveData data in inventorySaveData)
         {
             if(data.slotIndex < slotCount)
@@ -107,10 +110,9 @@ public class HotbarController : MonoBehaviour
                 if(itemPrefab != null)
                 {
                     GameObject item = Instantiate(itemPrefab, slot.transform);
-                    item.transform.localScale = Vector3.one;
-                    item.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
                     Item itemComponent = item.GetComponent<Item>();
+                    itemComponent.SnapToSlot();
                     if(itemComponent != null && data.quantity > 1)
                     {
                         itemComponent.quantity = data.quantity;

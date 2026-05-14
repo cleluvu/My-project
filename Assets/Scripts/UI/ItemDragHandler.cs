@@ -60,25 +60,25 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
                 {
                     GameObject temp = dropSlot.currentItem;
                     temp.transform.SetParent(originalSlot.transform);
-                    temp.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                    temp.GetComponent<Item>().SnapToSlot();
                     originalSlot.currentItem = temp;
 
                     transform.SetParent(dropSlot.transform);
                     dropSlot.currentItem = gameObject;
-                    GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                    GetComponent<Item>().SnapToSlot();
                 }
             }
             else
             {
+                // Thả vào ô trống
                 originalSlot.currentItem = null;
                 transform.SetParent(dropSlot.transform);
                 dropSlot.currentItem = gameObject;
-                GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                GetComponent<Item>().SnapToSlot();
             }
         }
         else
         {
-            // Nếu kéo ra ngoài kho -> bỏ luôn ra ngoài
             if (!IsWithinInventory(eventData.position))
             {
                 DropItem(originalSlot);
@@ -86,7 +86,7 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             else
             {
                 transform.SetParent(originalParent);
-                GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                GetComponent<Item>().SnapToSlot();
             }
         }
     }
@@ -105,10 +105,8 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         if(quantity > 1)
         {
             item.RemoveFromStack();
-
             transform.SetParent(originalParent);
-            GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-
+            GetComponent<Item>().SnapToSlot();
             quantity = 1;
         }
         else
@@ -116,7 +114,6 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             originalSlot.currentItem = null;
         }
 
-        // Xem người chơi ở đâu
         Transform playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
         if(playerTransform == null)
         {
@@ -124,18 +121,15 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             return;
         }
 
-        // Điểm rơi ngẫu nhiên quanh người chơi
         Vector2 dropOffset = Random.insideUnitCircle.normalized * Random.Range(minDropDistance, maxDropDistance);
         Vector2 dropPosition = (Vector2)playerTransform.position + dropOffset;
 
-        // Khởi tạo item tại điểm rơi
         GameObject dropItem = Instantiate(gameObject, dropPosition, Quaternion.identity);
         Item droppedItem = dropItem.GetComponent<Item>();
         droppedItem.quantity = 1;
 
         dropItem.GetComponent<BounceEffect>().StartBounce();
 
-        // Hủy UI của item (lúc kéo ra)
         if(quantity <= 1 && originalSlot.currentItem == null)
         {
             Destroy(gameObject);
@@ -153,10 +147,7 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private void SplitStack()
     {
         Item item = GetComponent<Item>();
-        if(item == null || item.quantity <= 1)
-        {
-            return;
-        }
+        if(item == null || item.quantity <= 1) return;
 
         int splitAmount = item.quantity / 2;
         if(splitAmount <= 0) return;
@@ -166,7 +157,6 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
         if(inventoryController == null || newItem == null) return;
 
-        // Kiếm ô trống nào đó để vứt vào
         foreach(Transform slotTransform in inventoryController.inventoryPanel.transform)
         {
             Slot slot = slotTransform.GetComponent<Slot>();
@@ -174,12 +164,11 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             {
                 slot.currentItem = newItem;
                 newItem.transform.SetParent(slot.transform);
-                newItem.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                newItem.GetComponent<Item>().SnapToSlot();
                 return;
             }
         }
 
-        // Không có ô trống thì
         item.AddToStack(splitAmount);
         Destroy(newItem);   
     }
