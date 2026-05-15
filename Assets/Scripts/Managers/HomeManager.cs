@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Collections;
 
 public class HomeManager : MonoBehaviour
 {
@@ -12,11 +13,16 @@ public class HomeManager : MonoBehaviour
     [Header("State UI")]
     public TextMeshProUGUI btnText;
 
+    [Header("Loading UI")]
+    public GameObject loadingPanel;
+    public Slider loadingSlider;
+
     private bool isFullScreenMode;
 
     void Start()
     {
         if (confirmPanel != null) confirmPanel.SetActive(false);
+        if (loadingPanel != null) loadingPanel.SetActive(false);
 
         if (PersistentUI.Instance != null)
         {
@@ -65,15 +71,70 @@ public class HomeManager : MonoBehaviour
     public void ExecuteNewGame()
     {
         confirmPanel.SetActive(false);
+        StartCoroutine(NewGameRoutine());
+    }
 
+    private IEnumerator NewGameRoutine()
+    {
+        if (loadingPanel != null) loadingPanel.SetActive(true);
+        if (loadingSlider != null) loadingSlider.value = 0f;
+
+        // Chạy thanh load ảo
+        float timer = 0f;
+        float fakeLoadTime = 1.0f;
+        while (timer < fakeLoadTime)
+        {
+            timer += Time.deltaTime;
+            if (loadingSlider != null)
+            {
+                loadingSlider.value = Mathf.Lerp(0f, 0.9f, timer / fakeLoadTime);
+            }
+            yield return null;
+        }
+
+        // Load thật
         if (PersistentUI.Instance != null) PersistentUI.Instance.gameObject.SetActive(true);
         if (SaveController.Instance != null) SaveController.Instance.StartNewGame();
+
+        if (loadingSlider != null) loadingSlider.value = 1f;
+
+        yield return new WaitForSeconds(0.2f); 
+
+        if (loadingPanel != null) loadingPanel.SetActive(false);
     }
 
     public void ContinueGame()
     {
+        StartCoroutine(ContinueGameRoutine());
+    }
+
+    private IEnumerator ContinueGameRoutine()
+    {
+        if (loadingPanel != null) loadingPanel.SetActive(true);
+        if (loadingSlider != null) loadingSlider.value = 0f;
+
+        // Chạy thanh loading ảo
+        float timer = 0f;
+        float fakeLoadTime = 1.5f;
+        while (timer < fakeLoadTime)
+        {
+            timer += Time.deltaTime;
+            if (loadingSlider != null)
+            {
+                loadingSlider.value = Mathf.Lerp(0f, 0.9f, timer / fakeLoadTime);
+            }
+            yield return null; 
+        }
+
+        // Chạy thanh loading thật
         if (PersistentUI.Instance != null) PersistentUI.Instance.gameObject.SetActive(true);
         if (SaveController.Instance != null) SaveController.Instance.StartContinueGame();
+
+        if (loadingSlider != null) loadingSlider.value = 1f;
+
+        yield return new WaitForSeconds(0.2f);
+        
+        if (loadingPanel != null) loadingPanel.SetActive(false);
     }
 
     public void QuitGame()

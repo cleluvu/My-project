@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; // QUAN TRỌNG: Phải có dòng này để dùng được Button
+using UnityEngine.UI; 
 
 public class HireManager : MonoBehaviour
 {
@@ -29,6 +29,12 @@ public class HireManager : MonoBehaviour
     private DockStation currentDock;
     private List<AgentTaskManager> activeAgents = new List<AgentTaskManager>();
 
+    private void Start()
+    {
+        currentPage = 0;
+        GenerateEmployeeSlots();
+    }
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -38,15 +44,20 @@ public class HireManager : MonoBehaviour
 
         if (nextButton != null) nextButton.onClick.AddListener(NextPage);
         if (prevButton != null) prevButton.onClick.AddListener(PrevPage);
+
+        PrewarmAgents();
     }
 
     public void OpenHireUI(DockStation dock)
     {
         currentDock = dock;
-        hirePanel.SetActive(true);
+        if (currentPage != 0) 
+        {
+            currentPage = 0;
+            GenerateEmployeeSlots();
+        }
         
-        currentPage = 0; 
-        GenerateEmployeeSlots();
+        hirePanel.SetActive(true);
     }
 
     public void CloseHireUI()
@@ -117,6 +128,24 @@ public class HireManager : MonoBehaviour
         else
         {
             Debug.Log("Không đủ tiền!");
+        }
+    }
+
+    private void PrewarmAgents()
+    {
+        foreach (EmployeeData emp in availableEmployees)
+        {
+            if (emp.agentPrefab != null)
+            {
+                // Sinh ra agent tạm
+                GameObject dummyAgent = Instantiate(emp.agentPrefab, new Vector3(-9999, -9999, 0), Quaternion.identity);
+                
+                // Tắt đi luôn
+                dummyAgent.SetActive(false); 
+                
+                // Hủy luôn
+                Destroy(dummyAgent);
+            }
         }
     }
 
