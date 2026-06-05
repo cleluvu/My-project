@@ -18,7 +18,7 @@ public class ShopSlot : MonoBehaviour
 
     public void UpdatePriceDisplay()
     {
-        if(priceText != null && currentItem)
+        if (priceText != null && currentItem)
         {
             priceText.text = itemPrice.ToString();
         }

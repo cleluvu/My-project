@@ -11,7 +11,7 @@ public class CurrencyController : MonoBehaviour
 
     private void Awake()
     {
-        if(Instance != null && Instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
         }
@@ -26,7 +26,7 @@ public class CurrencyController : MonoBehaviour
 
     public bool SpendGold(int amount)
     {
-        if(playerGold >= amount)
+        if (playerGold >= amount)
         {
             playerGold -= amount;
             OnGoldChanged?.Invoke(playerGold);
