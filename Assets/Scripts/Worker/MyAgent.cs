@@ -1,9 +1,6 @@
-using Unity.MLAgents;
-using Unity.MLAgents.Sensors;
-using Unity.MLAgents.Actuators;
 using UnityEngine;
 
-public class MyAgent : Agent 
+public class MyAgent : MonoBehaviour 
 {
     [Header("Hoạt ảnh & Di chuyển")]
     public Animator anim;
@@ -17,9 +14,8 @@ public class MyAgent : Agent
     private Vector2 lastMoveDirection = new Vector2(0, -1);
     private AgentTaskManager taskManager; // Tham chiếu sang bộ não
 
-    protected override void Awake()
+    protected void Awake()
     {
-        base.Awake();
         taskManager = GetComponent<AgentTaskManager>();
     }
 

@@ -8,7 +8,7 @@ public class DayAndNight : MonoBehaviour
     public Gradient lightColor;
 
     // Fix time
-    public float dayDuration = 60f;
+    public float dayDuration = 180f;
     public float currentTime = 0f;
     public int day = 0;
 
@@ -37,5 +37,11 @@ public class DayAndNight : MonoBehaviour
         {
             globalLight.color = lightColor.Evaluate(timePercent);
         }
+    }
+
+    public int GetCurrentHour()
+    {
+        float timePercent = currentTime / dayDuration;
+        return Mathf.FloorToInt(timePercent * 24f); 
     }
 }

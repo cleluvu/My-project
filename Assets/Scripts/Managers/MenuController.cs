@@ -9,7 +9,6 @@ public class MenuController : MonoBehaviour
         PauseController.SetPause(false);
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab))

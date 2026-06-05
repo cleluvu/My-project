@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 2502535946913015936}
   - component: {fileID: 64567762502596355}
   - component: {fileID: 5152102454472253669}
-  - component: {fileID: 1031989965761061633}
   - component: {fileID: 4628764854952855158}
   - component: {fileID: 2045419815808765530}
   - component: {fileID: 7251533386520351077}
@@ -185,37 +184,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   colorDefault: {r: 0.8, g: 0.8, b: 0.8, a: 1}
   colorSelected: {r: 0.25, g: 0.65, b: 0.8, a: 1}
---- !u!114 &1031989965761061633
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8452056158034708193}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d1c4e0b1822b495aa52bc52839ecb30, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_BrainParameters:
-    VectorObservationSize: 7
-    NumStackedVectorObservations: 1
-    m_ActionSpec:
-      m_NumContinuousActions: 2
-      BranchSizes: 
-    VectorActionSize: 02000000
-    VectorActionDescriptions: []
-    VectorActionSpaceType: 1
-    hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 677a4810bdaba034a87eef3f34a21dd6, type: 3}
-  m_InferenceDevice: 0
-  m_BehaviorType: 0
-  m_BehaviorName: MyAgent
-  TeamId: 0
-  m_UseChildSensors: 1
-  m_UseChildActuators: 1
-  m_DeterministicInference: 0
-  m_ObservableAttributeHandling: 0
 --- !u!114 &4628764854952855158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -337,10 +305,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa436a3c6be991a4d95930bfddcf9f9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agentParameters:
-    maxStep: 0
-  hasUpgradedFromAgentParameters: 1
-  MaxStep: 5000
   anim: {fileID: 6220968336955126896}
   moveSpeed: 3
   agentRb: {fileID: 2502535946913015936}
@@ -361,4 +325,8 @@ MonoBehaviour:
   role: 2
   homeTarget: {fileID: 0}
   seedToPlantID: tomato
+  seedID: 0
   hitCooldown: 1
+  hiredEmployeeID: 
+  remainingDays: 0
+  isLeaving: 0

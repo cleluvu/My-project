@@ -1,5 +1,4 @@
 using System.Collections;
-using NUnit.Framework;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +11,12 @@ public class NPC : MonoBehaviour, IInteractable
     public Image portraitImage;
     private int dialogueIndex;
     private bool isTyping, isDialogueActive;
+    private NPCActionController actionController;
+
+    void Awake()
+    {
+        actionController = GetComponent<NPCActionController>();
+    }
 
     public bool CanInteract()
     {
@@ -20,7 +25,7 @@ public class NPC : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        if(dialogueData == null || (PauseController.IsGamePause && !isDialogueActive))
+        if (PauseController.IsGamePause && !isDialogueActive)
         {
             return;
         }
@@ -31,6 +36,17 @@ public class NPC : MonoBehaviour, IInteractable
         }
         else
         {
+            if (actionController != null)
+            {
+                actionController.SetupDynamicDialogue();
+            }
+
+            if (dialogueData == null) 
+            {
+                Debug.LogWarning($"[NPC] {gameObject.name} không có dữ liệu thoại (dialogueData bị null)!");
+                return;
+            }
+
             StartDialogue();
         }
     }
@@ -46,7 +62,6 @@ public class NPC : MonoBehaviour, IInteractable
         dialoguePanel.SetActive(true);
         PauseController.SetPause(true);
 
-        // TypeLine
         StartCoroutine(TypeLine());
     }
 
@@ -81,7 +96,7 @@ public class NPC : MonoBehaviour, IInteractable
 
         isTyping = false;
 
-        if(dialogueData.autoProgressLines.Length > dialogueIndex && dialogueData.autoProgressLines[dialogueIndex])
+        if(dialogueData.autoProgressLines != null && dialogueData.autoProgressLines.Length > dialogueIndex && dialogueData.autoProgressLines[dialogueIndex])
         {
             yield return new WaitForSeconds(dialogueData.autoProgressDelay);
             NextLine();
