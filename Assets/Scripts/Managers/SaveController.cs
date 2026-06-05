@@ -110,6 +110,14 @@ public class SaveController : MonoBehaviour
             data.hiredAgentsData = HireManager.Instance.GetSaveData();
         }
 
+        // Lưu dân làng vào game
+        NPCCoreSystems[] allNPCs = FindObjectsByType<NPCCoreSystems>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        data.npcSaveData = new List<NPCSaveData>();
+        foreach(NPCCoreSystems npc in allNPCs)
+        {
+            data.npcSaveData.Add(npc.GetSaveData());
+        }
+
         // Chuyển thành JSON và lưu file
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(savePath, json);
@@ -230,6 +238,23 @@ public class SaveController : MonoBehaviour
             DockStation dock = Object.FindFirstObjectByType<DockStation>();
             HireManager.Instance.RestoreData(data.hiredAgentsData, dock);
         }
+
+        // Load dân làng vào game
+        NPCCoreSystems[] allNPCs = FindObjectsByType<NPCCoreSystems>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        if (data.npcSaveData != null)
+        {
+            foreach(NPCCoreSystems npc in allNPCs)
+            {
+                // Khớp data bằng tên (ID)
+                NPCSaveData npcData = data.npcSaveData.Find(n => n.npcID == npc.gameObject.name);
+                if (npcData != null)
+                {
+                    npc.RestoreData(npcData);
+                }
+            }
+        }
+
+        Debug.Log("Đã Load thành công!");
 
         Debug.Log("Đã Load thành công!");
     }

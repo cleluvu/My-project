@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9104043e7688d3447919b2d871d1f181, type: 3}
+  m_Name: 1Neutral_Dia
+  m_EditorClassIdentifier: 
+  npcName: Alpha
+  npcPortrait: {fileID: -7527145504033472756, guid: 0509a0bf9edf0374387c7883ea249d13, type: 3}
+  dialogueLines:
+  - Hello there. It is nice to see you again.
+  - I am doing fine today. How are you doing?
+  - The day is going normally. I hope everything is okay for you.
+  - Nothing special is happening. I am just enjoying my time.
+  autoProgressLines: 01000000
+  autoProgressDelay: 1
+  typingSpeed: 0.05
+  voiceSound: {fileID: 8300000, guid: 3030ac23b09d82f48b1593da5cc9b23d, type: 3}
+  voicePitch: 1

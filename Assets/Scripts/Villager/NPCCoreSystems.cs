@@ -33,7 +33,7 @@ public class NPCCoreSystems : MonoBehaviour
 
     private bool wasInteracting = false; 
     private float lastTradeTime = 0f;
-    private int lastInteractedDay = -1;
+    public int lastInteractedDay = -1;
     private int previousHour = -1;
 
     void Awake()
@@ -222,5 +222,41 @@ public class NPCCoreSystems : MonoBehaviour
             currentTask = activeTask;
             Debug.Log($"[Schedule] {gameObject.name} chuyển sang làm: {currentTask.action} lúc {currentHour}h");
         }
+    }
+
+    public NPCSaveData GetSaveData()
+    {
+        NPCSaveData data = new NPCSaveData();
+        data.npcID = gameObject.name; // Dùng tên làm ID
+        data.position = transform.position;
+
+        data.hunger = currentNeeds.hunger;
+        data.energy = currentNeeds.energy;
+        data.socialNeed = currentNeeds.socialNeed;
+
+        data.playerFriendship = playerRelationship.friendship;
+        data.playerTrust = playerRelationship.trust;
+        data.playerFamiliarity = playerRelationship.familiarity;
+
+        data.lastInteractedDay = lastInteractedDay; 
+
+        return data;
+    }
+
+    public void RestoreData(NPCSaveData data)
+    {
+        // Vô hiệu hóa AIPath tạm thời để set vị trí không bị giật
+        if (aiPath != null) aiPath.Teleport(data.position);
+        else transform.position = data.position;
+
+        currentNeeds.hunger = data.hunger;
+        currentNeeds.energy = data.energy;
+        currentNeeds.socialNeed = data.socialNeed;
+
+        playerRelationship.friendship = data.playerFriendship;
+        playerRelationship.trust = data.playerTrust;
+        playerRelationship.familiarity = data.playerFamiliarity;
+
+        lastInteractedDay = data.lastInteractedDay;
     }
 }

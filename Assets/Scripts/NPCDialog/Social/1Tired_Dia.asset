@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9104043e7688d3447919b2d871d1f181, type: 3}
+  m_Name: 1Tired_Dia
+  m_EditorClassIdentifier: 
+  npcName: Lambda
+  npcPortrait: {fileID: -7527145504033472756, guid: ec65f94bb0117ad4ca12f7314bcc0d45, type: 3}
+  dialogueLines:
+  - I talked with so many people today. Now I am tired.
+  - It was fun meeting everyone. I need some quiet time now.
+  - My day was full of conversations. I should rest for a while.
+  - I enjoyed being around others. But I am out of energy.
+  autoProgressLines: 01000000
+  autoProgressDelay: 1
+  typingSpeed: 0.05
+  voiceSound: {fileID: 8300000, guid: 3030ac23b09d82f48b1593da5cc9b23d, type: 3}
+  voicePitch: 1

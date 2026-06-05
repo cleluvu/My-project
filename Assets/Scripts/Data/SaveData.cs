@@ -82,4 +82,7 @@ public class SaveData
 
     // Lưu các nhân viên của nông trại
     public List<AgentSaveData> hiredAgentsData = new List<AgentSaveData>();
+
+    // Lưu toàn bộ dân làng
+    public List<NPCSaveData> npcSaveData = new List<NPCSaveData>();
 }

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9104043e7688d3447919b2d871d1f181, type: 3}
+  m_Name: 2Happy_Dia 1
+  m_EditorClassIdentifier: 
+  npcName: Epsilon
+  npcPortrait: {fileID: -7527145504033472756, guid: b18d501287dda1b4e869538a016fb47c, type: 3}
+  dialogueLines:
+  - What a relaxing day. I do not want it to end.
+  - I finished my work early. Now I can rest and enjoy myself.
+  - Everything feels easy today. I like days like this.
+  - I have nothing important to do. That makes me happy.
+  autoProgressLines: 01000000
+  autoProgressDelay: 1
+  typingSpeed: 0.05
+  voiceSound: {fileID: 8300000, guid: 3030ac23b09d82f48b1593da5cc9b23d, type: 3}
+  voicePitch: 1

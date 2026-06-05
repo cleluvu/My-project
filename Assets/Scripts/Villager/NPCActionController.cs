@@ -157,8 +157,19 @@ public class NPCActionController : MonoBehaviour
     {
         if (aiPath != null)
         {
+            // 1. Tạo ra một độ lệch ngẫu nhiên trong bán kính 2 đơn vị (2m)
+            // Dùng Random.insideUnitCircle (trả về Vector2) sau đó ép kiểu sang Vector3 để trục Z luôn = 0 (phù hợp với game 2D)
+            Vector2 randomOffset = Random.insideUnitCircle * 2f; 
+            
+            // 2. Cộng độ lệch này vào vị trí gốc do tham số truyền vào
+            Vector3 finalDestination = targetPosition + new Vector3(randomOffset.x, randomOffset.y, 0f);
+
+            // 3. Gán điểm đến mới và cho phép di chuyển
             aiPath.isStopped = false;
-            aiPath.destination = targetPosition;
+            aiPath.destination = finalDestination;
+            
+            // Lời khuyên: Bạn CÓ THỂ mở comment dòng aiPath.SearchPath() nếu muốn NPC 
+            // phản hồi lập tức thay vì chờ đến chu kỳ update tiếp theo của A*
             // aiPath.SearchPath();
         }
     }
