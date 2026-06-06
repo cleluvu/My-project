@@ -245,7 +245,6 @@ public class NPCCoreSystems : MonoBehaviour
 
     public void RestoreData(NPCSaveData data)
     {
-        // Vô hiệu hóa AIPath tạm thời để set vị trí không bị giật
         if (aiPath != null) aiPath.Teleport(data.position);
         else transform.position = data.position;
 

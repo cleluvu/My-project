@@ -81,41 +81,37 @@ public class NPCBrain : Agent
 
     private void CalculateRewards(NPCAction currentAction)
     {
-        // Tách bạch 2 luồng phần thưởng theo mô hình toán học
-        float stepIndividualReward = -0.0005f; // Phạt thời gian mặc định
+        // Tách 2 luồng phần thưởng
+        float stepIndividualReward = -0.0005f;
         float stepSocialReward = 0f;
 
-        // ==========================================
-        // 1. PHÁ VỠ LỊCH TRÌNH CỨNG (Soft-Constraints)
-        // ==========================================
         if (coreSystems.currentTask != null)
         {
-            // Quy ước: Khung giờ có lệnh Wander được xem là "Giờ Tự Do"
             bool isFreeTime = (coreSystems.currentTask.action == NPCAction.Wander);
 
             if (currentAction == coreSystems.currentTask.action)
             {
-                stepIndividualReward += 0.01f; // Tuân thủ lịch trình
+                // Thưởng tuân thủ lịch trình
+                stepIndividualReward += 0.01f;
             }
             else if (isFreeTime && (currentAction == NPCAction.Talk || currentAction == NPCAction.Trade))
             {
-                // Thưởng sáng kiến: Thay vì đi lang thang vô mục đích, AI biết dùng thời gian rảnh để xây dựng quan hệ
+                // Thưởng xây dựng quan hệ xã hội
                 stepIndividualReward += 0.005f; 
             }
             else
             {
-                stepIndividualReward -= 0.005f; // Bỏ bê công việc (Rest/Work) sẽ bị phạt
+                // Phạt bỏ bê công việc
+                stepIndividualReward -= 0.005f;
             }
         }
 
-        // ==========================================
-        // 2. TƯƠNG TÁC & HÀM PHẦN THƯỞNG HỢP TÁC (Cooperative Reward Shaping)
-        // ==========================================
         if (currentAction == NPCAction.Trade || currentAction == NPCAction.Talk)
         {
             if (Time.time - lastInteractionTime < INTERACTION_COOLDOWN)
             {
-                stepIndividualReward -= 0.01f; // Phạt spam
+                // Phạt spam giao tiếp
+                stepIndividualReward -= 0.01f;
             }
             else
             {
@@ -136,7 +132,7 @@ public class NPCBrain : Agent
                             {
                                 if (coreSystems.currentNeeds.socialNeed < 95f || otherNPC.currentNeeds.socialNeed < 95f)
                                 {
-                                    // Cập nhật trạng thái môi trường
+                                    // Cập nhật nhu cầu xã hội
                                     coreSystems.currentNeeds.socialNeed = Mathf.Clamp(coreSystems.currentNeeds.socialNeed + 20f, 0, 100);
                                     otherNPC.currentNeeds.socialNeed = Mathf.Clamp(otherNPC.currentNeeds.socialNeed + 20f, 0, 100);
 
@@ -149,11 +145,11 @@ public class NPCBrain : Agent
 
                                     // Tích lũy điểm vào các bể phần thưởng tương ứng
                                     if (coreSystems.currentNeeds.socialNeed < 50f) 
-                                        stepIndividualReward += 0.02f; // Lợi ích cá nhân (giải tỏa cô đơn)
+                                        stepIndividualReward += 0.02f; // Lợi ích cá nhân
                                     
                                     if (otherNPC.currentNeeds.socialNeed < 50f) 
                                     {
-                                        stepSocialReward += 0.04f; // Lợi ích xã hội (giúp đỡ người khác)
+                                        stepSocialReward += 0.04f; // Lợi ích xã hội
                                         
                                         // Thưởng đồng bộ cực kỳ quan trọng cho MARL
                                         NPCBrain otherBrain = otherNPC.GetComponent<NPCBrain>();
@@ -214,10 +210,6 @@ public class NPCBrain : Agent
             }
         }
 
-        // ==========================================
-        // 3. TÍNH TOÁN EXPECTED RETURN CUỐI CÙNG
-        // R_total = (1 - lambda) * R_ind + lambda * R_soc
-        // ==========================================
         float finalReward = (1f - cooperativeFactor) * stepIndividualReward + (cooperativeFactor) * stepSocialReward;
         
         if (finalReward != 0f)
@@ -233,7 +225,7 @@ public class NPCBrain : Agent
         {
             Debug.Log($"{gameObject.name} đã kiệt sức!");
             AddReward(-1.0f);
-            // EndEpisode();
+            EndEpisode();
         }
 
         // Thành công sống qua ngày
@@ -242,7 +234,7 @@ public class NPCBrain : Agent
         {
             Debug.Log($"{gameObject.name} sống sót qua 1 ngày!");
             AddReward(1.0f); 
-            // EndEpisode();
+            EndEpisode();
         }
     }
 
