@@ -1,5 +1,65 @@
-# Auto detect text files and perform LF normalization
-* text=auto
-*.unity merge=unityyamlmerge
-*.prefab merge=unityyamlmerge
-*.asset merge=unityyamlmerge
+############################################
+# Unity - YAML merge (SCENE / PREFAB / ASSET)
+############################################
+
+*.unity     merge=unityyamlmerge
+*.prefab    merge=unityyamlmerge
+*.asset     merge=unityyamlmerge
+*.mat       merge=unityyamlmerge
+*.anim      merge=unityyamlmerge
+*.controller merge=unityyamlmerge
+*.overrideController merge=unityyamlmerge
+*.playable  merge=unityyamlmerge
+*.physicsMaterial2D merge=unityyamlmerge
+*.physicsMaterial merge=unityyamlmerge
+*.guiskin   merge=unityyamlmerge
+*.flare     merge=unityyamlmerge
+*.mask      merge=unityyamlmerge
+
+############################################
+# C# code (standard 3-way merge)
+############################################
+
+*.cs merge=diff3
+
+############################################
+# JSON / data files (safe merge strategy)
+############################################
+
+*.json merge=union
+*.txt  merge=union
+*.xml  merge=union
+
+############################################
+# Binary / non-merge files (always take one side)
+############################################
+
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.tga  binary
+*.psd  binary
+*.fbx  binary
+*.wav  binary
+*.mp3  binary
+
+############################################
+# Unity metadata (IMPORTANT)
+############################################
+
+*.meta merge=unityyamlmerge
+
+############################################
+# Prevent useless merge conflicts
+############################################
+
+*.dll binary
+*.exe binary
+*.so  binary
+
+############################################
+# Optional: ignore OS junk files
+############################################
+
+.DS_Store
+Thumbs.db
