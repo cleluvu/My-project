@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9104043e7688d3447919b2d871d1f181, type: 3}
+  m_Name: 2Angry_Dia 1
+  m_EditorClassIdentifier: 
+  npcName: Omega
+  npcPortrait: {fileID: -7527145504033472756, guid: 6790ba981c27a024db98dbf6a130dc32, type: 3}
+  dialogueLines:
+  - My feelings are hurt. I am trying to stay calm.
+  - What happened upset me a lot. I need some time to think.
+  - I cannot ignore my emotions. This situation makes me angry.
+  - I care deeply about things. That is why I am upset.
+  autoProgressLines: 01000000
+  autoProgressDelay: 1
+  typingSpeed: 0.05
+  voiceSound: {fileID: 8300000, guid: 3030ac23b09d82f48b1593da5cc9b23d, type: 3}
+  voicePitch: 1

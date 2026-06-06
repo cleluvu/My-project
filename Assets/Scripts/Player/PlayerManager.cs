@@ -17,9 +17,6 @@ public class PlayerManager : MonoBehaviour
     public GameObject attackZone;
     public int stateTools = 0;
 
-    // Update Player Info
-    Player player;
-
     // check ngủ
     Bed bed;
 
@@ -27,7 +24,6 @@ public class PlayerManager : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        player = GetComponent<Player>();
         bed = FindAnyObjectByType<Bed>();
     }
 
