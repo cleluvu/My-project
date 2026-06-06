@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -55,6 +56,8 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
                     targetItem.AddToStack(draggedItem.quantity);
                     originalSlot.currentItem = null;
                     Destroy(gameObject);
+
+                    NotifyInventoryChanged();
                 }
                 else
                 {
@@ -93,7 +96,12 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public bool IsWithinInventory(Vector2 mousePosition)
     {
-        RectTransform inventoryRect =  originalParent.parent.GetComponent<RectTransform>();
+        // Kiểm tra an toàn tránh lỗi Null nếu parent của Slot bị thay đổi cấu trúc
+        if (originalParent == null || originalParent.parent == null) return false;
+        
+        RectTransform inventoryRect = originalParent.parent.GetComponent<RectTransform>();
+        if (inventoryRect == null) return false;
+
         return RectTransformUtility.RectangleContainsScreenPoint(inventoryRect, mousePosition);
     }
 
@@ -126,14 +134,17 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
         GameObject dropItem = Instantiate(gameObject, dropPosition, Quaternion.identity);
         Item droppedItem = dropItem.GetComponent<Item>();
-        droppedItem.quantity = 1;
+        if (droppedItem != null) droppedItem.quantity = 1;
 
-        dropItem.GetComponent<BounceEffect>().StartBounce();
+        BounceEffect bounce = dropItem.GetComponent<BounceEffect>();
+        if (bounce != null) bounce.StartBounce();
 
         if(quantity <= 1 && originalSlot.currentItem == null)
         {
             Destroy(gameObject);
         } 
+
+        NotifyInventoryChanged();
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -165,11 +176,22 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
                 slot.currentItem = newItem;
                 newItem.transform.SetParent(slot.transform);
                 newItem.GetComponent<Item>().SnapToSlot();
+
+                NotifyInventoryChanged();
                 return;
             }
         }
 
+        // Nếu hòm đồ đầy không tách được, hoàn trả lại số lượng ban đầu
         item.AddToStack(splitAmount);
         Destroy(newItem);   
+    }
+
+    private void NotifyInventoryChanged()
+    {
+        if (InventoryController.Instance != null)
+        {
+            InventoryController.Instance.RebuildItemCounts();
+        }
     }
 }

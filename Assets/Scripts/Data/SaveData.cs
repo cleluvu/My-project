@@ -1,4 +1,4 @@
- using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -48,7 +48,6 @@ public class AgentSaveData
     public Vector3 position;
 }
 
-
 [System.Serializable]
 public class SaveData
 {
@@ -83,6 +82,6 @@ public class SaveData
     // Lưu các nhân viên của nông trại
     public List<AgentSaveData> hiredAgentsData = new List<AgentSaveData>();
 
-    // Lưu toàn bộ dân làng
-    public List<NPCSaveData> npcSaveData = new List<NPCSaveData>();
+    // Lưu tiến độ Quest
+    public List<QuestProgress> questProgressData = new List<QuestProgress>();
 }

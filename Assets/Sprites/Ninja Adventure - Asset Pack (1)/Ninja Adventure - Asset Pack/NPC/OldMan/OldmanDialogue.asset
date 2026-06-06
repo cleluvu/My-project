@@ -17,8 +17,14 @@ MonoBehaviour:
   dialogueLines:
   - Hello
   - Hi there
-  autoProgressLines: 0100
+  autoProgressLines:
+  - 1
+  - 0
+  endDialogueLines:
+  - 0
+  - 1
   autoProgressDelay: 1.5
   typingSpeed: 0.05
   voiceSound: {fileID: 8300000, guid: 89a5e865da8e42b43b7540564710f7bb, type: 3}
   voicePitch: 1
+  choices: []

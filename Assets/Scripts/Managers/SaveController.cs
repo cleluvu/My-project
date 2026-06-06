@@ -35,11 +35,11 @@ public class SaveController : MonoBehaviour
     {
         SaveData data = new SaveData();
 
-        // Lưu vị trí Player
+        // 1. Lưu vị trí Player
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) data.playerPosition = player.transform.position;
 
-        // Lưu thời gian
+        // 2. Lưu thời gian
         DayAndNight dayNight = Object.FindFirstObjectByType<DayAndNight>();
         if (dayNight != null)
         {
@@ -47,15 +47,11 @@ public class SaveController : MonoBehaviour
             data.savedDay = dayNight.day;
         }
 
-        // Lưu trạng thái rương kho báu
+        // 3. Lưu trạng thái rương kho báu
         List<ChestSaveData> chestSaveDatas = GetChestsState();
-        if(chestSaveDatas != null)
-        {
-            data.chestSaveDatas = chestSaveDatas;
-        }
+        if(chestSaveDatas != null) data.chestSaveDatas = chestSaveDatas;
 
-        // Lưu kho đồ
-        List<InventorySaveData> inventorySaveData = inventoryController.GetInventoryItem();
+        // 4. Lưu kho đồ chính
         if (inventoryController != null)
         {
             data.inventorySaveData = inventoryController.GetInventoryItem();
@@ -65,9 +61,8 @@ public class SaveController : MonoBehaviour
             Debug.LogWarning("Không tìm thấy InventoryController để lưu!");
         }
 
-        // Lưu hotbar
-        List<InventorySaveData> hotbarSaveData = hotbarController.GetHotbarItem();
-        if (inventoryController != null)
+        // 5. Lưu thanh hotbar
+        if (hotbarController != null)
         {
             data.hotbarSaveData = hotbarController.GetHotbarItem();
         }
@@ -76,13 +71,13 @@ public class SaveController : MonoBehaviour
             Debug.LogWarning("Không tìm thấy hotbarController để lưu!");
         }
 
-        // Lưu nông trại
+        // 6. Lưu nông trại
         if(farmingController != null)
         {
             data.farmTileSaveData = farmingController.GetFarmSaveData();
         }
 
-        // Lưu mấy object có thể bị phá hủy và spawn lại
+        // 7. Lưu vật phẩm môi trường (đá, gỗ...)
         CollectedObject[] resources = FindObjectsByType<CollectedObject>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         data.resourceSaveData = new List<ResourceSaveData>();
         foreach(CollectedObject res in resources)
@@ -90,7 +85,7 @@ public class SaveController : MonoBehaviour
             data.resourceSaveData.Add(res.GetSaveData());
         }
 
-        // Lưu entity trong game
+        // 8. Lưu các thực thể (Thú nuôi, quái...)
         Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         data.entitySaveData = new List<EntitySaveData>();
         foreach(Entity e in entities)
@@ -98,75 +93,30 @@ public class SaveController : MonoBehaviour
             data.entitySaveData.Add(e.GetSaveData());
         }
 
-        // Lưu tiền vàng và cửa hàng
-        int playerGold = CurrencyController.Instance.GetGold();
-        List<ShopInstanceData> shopStates = GetShopStates();
-        data.playerGold = playerGold;
-        data.shopStates = shopStates;
+        // 9. Lưu tiền vàng và trạng thái shop
+        if (CurrencyController.Instance != null)
+        {
+            data.playerGold = CurrencyController.Instance.GetGold();
+        }
+        data.shopStates = GetShopStates();
 
-        // Lưu nhân viên làm thuê
+        // 10. Lưu nhân viên làm thuê
         if (HireManager.Instance != null)
         {
             data.hiredAgentsData = HireManager.Instance.GetSaveData();
         }
 
-        // Lưu dân làng vào game
-        NPCCoreSystems[] allNPCs = FindObjectsByType<NPCCoreSystems>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        data.npcSaveData = new List<NPCSaveData>();
-        foreach(NPCCoreSystems npc in allNPCs)
+        // 11. Lưu tiến độ Quest
+        if (QuestController.Instance != null && QuestController.Instance.activateQuests != null)
         {
-            data.npcSaveData.Add(npc.GetSaveData());
+            data.questProgressData = QuestController.Instance.activateQuests;
         }
 
-        // Chuyển thành JSON và lưu file
+        // Chuyển thành JSON và lưu xuống ổ cứng
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(savePath, json);
-        Debug.Log("Đã Save vị trí và thời gian!");
-        Debug.Log("Đường dẫn file save: " + Application.persistentDataPath);
-    }
-
-    private List<ShopInstanceData> GetShopStates()
-    {
-        List<ShopInstanceData> shopStates = new List<ShopInstanceData>();
-        foreach(var shop in shops)
-        {
-            ShopInstanceData shopData = new ShopInstanceData
-            {
-                shopID = shop.shopID,
-                stock = new List<ShopItemData>()
-            };
-
-            foreach(var stockItem in shop.GetCurrentStock())
-            {
-                shopData.stock.Add(new ShopItemData
-                {
-                    itemID = stockItem.itemID,
-                    quantity = stockItem.quantity
-                });
-            }
-
-            shopStates.Add(shopData);
-        }
-
-        return shopStates;
-    }
-
-    private List<ChestSaveData> GetChestsState()
-    {
-        List<ChestSaveData> chestStates = new List<ChestSaveData>();
-
-        foreach(Chest chest in chests)
-        {
-            ChestSaveData chestSaveData = new ChestSaveData
-            {
-                chestID = chest.ChestID,
-                isOpened = chest.IsOpened
-            };
-
-            chestStates.Add(chestSaveData);
-        }
-
-        return chestStates;
+        
+        Debug.Log("Đã Save toàn bộ dữ liệu game thành công!");
     }
 
     public void LoadGame()
@@ -176,11 +126,11 @@ public class SaveController : MonoBehaviour
         string json = File.ReadAllText(savePath);
         SaveData data = JsonUtility.FromJson<SaveData>(json);
 
-        // Load vị trí Player
+        // 1. Load vị trí Player
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) player.transform.position = data.playerPosition;
 
-        // Load thời gian (MỚI)
+        // 2. Load thời gian trong game
         DayAndNight dayNight = Object.FindFirstObjectByType<DayAndNight>();
         if (dayNight != null)
         {
@@ -188,36 +138,39 @@ public class SaveController : MonoBehaviour
             dayNight.day = data.savedDay;
         }
 
-        // Load trạng thái rương kho báu
+        // 3. Load trạng thái rương kho báu
         LoadChestState(data.chestSaveDatas);
 
-        // Load kho đồ
-        inventoryController.SetInventoryItem(data.inventorySaveData);
+        // 4. Load kho đồ chính 
+        if (inventoryController != null)
+        {
+            inventoryController.SetInventoryItem(data.inventorySaveData);
+        }
 
-        // Load hotbar
-        hotbarController.SetHotbarItem(data.hotbarSaveData);
+        // 5. Load thanh hotbar
+        if (hotbarController != null)
+        {
+            hotbarController.SetHotbarItem(data.hotbarSaveData);
+        }
 
-        // Load nông trại
-        if(farmingController != null)
+        // 6. Load nông trại
+        if(farmingController != null && data.farmTileSaveData != null)
         {
             farmingController.RestoreFarmData(data.farmTileSaveData);
         }
 
-        // Load mấy object có thể bị phá hủy và spawn lại
+        // 7. Load vật phẩm môi trường tái sinh
         CollectedObject[] resources = FindObjectsByType<CollectedObject>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         if(data.resourceSaveData != null)
         {
             foreach(CollectedObject obj in resources)
             {
-                ResourceSaveData saveData = data.resourceSaveData.Find(r => r.ID == obj.ID);
-                if(saveData != null)
-                {
-                    obj.RestoreData(saveData);
-                }
+                ResourceSaveData resData = data.resourceSaveData.Find(r => r.ID == obj.ID);
+                if(resData != null) obj.RestoreData(resData);
             }
         }
 
-        // Load các thực thể trong game
+        // 8. Load các thực thể (Thú nuôi, quái...)
         Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         if(data.entitySaveData != null)
         {
@@ -228,58 +181,72 @@ public class SaveController : MonoBehaviour
             }
         }
 
-        // Load tiền vàng và cửa hàng
+        // 9. Load tiền vàng và cửa hàng
         LoadShopStates(data.shopStates);
-        CurrencyController.Instance.SetGold(data.playerGold);
+        if (CurrencyController.Instance != null)
+        {
+            CurrencyController.Instance.SetGold(data.playerGold);
+        }
 
-        // Load nhân viên làm thuê 
+        // 10. Load nhân viên làm thuê 
         if (HireManager.Instance != null && data.hiredAgentsData != null && data.hiredAgentsData.Count > 0)
         {
             DockStation dock = Object.FindFirstObjectByType<DockStation>();
             HireManager.Instance.RestoreData(data.hiredAgentsData, dock);
         }
 
-        // Load dân làng vào game
-        NPCCoreSystems[] allNPCs = FindObjectsByType<NPCCoreSystems>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        if (data.npcSaveData != null)
+        // 11. Load tiến độ Quest
+        if (QuestController.Instance != null && data.questProgressData != null)
         {
-            foreach(NPCCoreSystems npc in allNPCs)
-            {
-                // Khớp data bằng tên (ID)
-                NPCSaveData npcData = data.npcSaveData.Find(n => n.npcID == npc.gameObject.name);
-                if (npcData != null)
-                {
-                    npc.RestoreData(npcData);
-                }
-            }
+            QuestController.Instance.LoadQuestProgress(data.questProgressData);
         }
 
-        Debug.Log("Đã Load thành công!");
+        Debug.Log("Đã tải dữ liệu (Load Game) thành công!");
+    }
 
-        Debug.Log("Đã Load thành công!");
+    private List<ShopInstanceData> GetShopStates()
+    {
+        List<ShopInstanceData> shopStates = new List<ShopInstanceData>();
+        if (shops == null) return shopStates;
+
+        foreach(var shop in shops)
+        {
+            ShopInstanceData shopData = new ShopInstanceData { shopID = shop.shopID, stock = new List<ShopItemData>() };
+            foreach(var stockItem in shop.GetCurrentStock())
+            {
+                shopData.stock.Add(new ShopItemData { itemID = stockItem.itemID, quantity = stockItem.quantity });
+            }
+            shopStates.Add(shopData);
+        }
+        return shopStates;
+    }
+
+    private List<ChestSaveData> GetChestsState()
+    {
+        List<ChestSaveData> chestStates = new List<ChestSaveData>();
+        if (chests == null) return chestStates;
+
+        foreach(Chest chest in chests)
+        {
+            chestStates.Add(new ChestSaveData { chestID = chest.ChestID, isOpened = chest.IsOpened });
+        }
+        return chestStates;
     }
 
     private void LoadShopStates(List<ShopInstanceData> shopStates)
     {
-        if(shopStates == null) return;
+        if(shopStates == null || shops == null) return;
 
         foreach(var shop in shops)
         {
             ShopInstanceData shopData = shopStates.FirstOrDefault(s => s.shopID == shop.shopID);
-
             if(shopData != null)
             {
                 List<ShopNPC.ShopStockItem> loadedStock = new List<ShopNPC.ShopStockItem>();
-
                 foreach(var itemData in shopData.stock)
                 {
-                    loadedStock.Add(new ShopNPC.ShopStockItem
-                    {
-                       itemID = itemData.itemID,
-                       quantity = itemData.quantity 
-                    });
+                    loadedStock.Add(new ShopNPC.ShopStockItem { itemID = itemData.itemID, quantity = itemData.quantity });
                 }
-
                 shop.SetStock(loadedStock);
             }
         }
@@ -287,98 +254,56 @@ public class SaveController : MonoBehaviour
 
     private void LoadChestState(List<ChestSaveData> chestStates)
     {
+        if (chestStates == null || chests == null) return;
+
         foreach(Chest chest in chests)
         {
             ChestSaveData chestSaveData = chestStates.FirstOrDefault(c => c.chestID == chest.ChestID);
-
-            if(chestSaveData != null)
-            {
-                chest.SetOpened(chestSaveData.isOpened);
-            }
+            if(chestSaveData != null) chest.SetOpened(chestSaveData.isOpened);
         }
     }
 
     public void NewGame()
     {
-        // Xóa file save cũ 
-        if (File.Exists(savePath))
-        {
-            File.Delete(savePath);
-        }
+        if (File.Exists(savePath)) File.Delete(savePath);
         
-        // Đặt lại tiền vàng
-        if (CurrencyController.Instance != null)
-        {
-            CurrencyController.Instance.SetGold(100); 
-        }
+        if (CurrencyController.Instance != null) CurrencyController.Instance.SetGold(100); 
 
-        // Đặt lại thời gian
         DayAndNight dayNight = Object.FindFirstObjectByType<DayAndNight>();
-        if (dayNight != null)
-        {
-            dayNight.day = 1;
-            dayNight.currentTime = 0f;
-        }
+        if (dayNight != null) { dayNight.day = 1; dayNight.currentTime = 0f; }
 
-        // Đưa Player về vị trí xuất phát mặc định
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-        {
-            player.transform.position = new Vector3(0, 0, 0); 
-        }
+        if (player != null) player.transform.position = new Vector3(0, 0, 0); 
 
-        // Khởi tạo rương đồ
-        if (inventoryController != null)
-        {
-            List<InventorySaveData> startItems = new List<InventorySaveData>();
-            inventoryController.SetInventoryItem(startItems);
-        }
-        else
-        {
-            Debug.Log("Lỗi khởi tạo rương đồ");
-        }
+        if (inventoryController != null) inventoryController.SetInventoryItem(new List<InventorySaveData>());
+        if (hotbarController != null) hotbarController.SetHotbarItem(new List<InventorySaveData>());
 
-        if(hotbarController != null)
+        // Làm trống tiến độ nhiệm vụ khi bắt đầu game mới hoàn toàn
+        if (QuestController.Instance != null)
         {
-            List<InventorySaveData> hotbarDatas = new List<InventorySaveData>();
-            hotbarController.SetHotbarItem(hotbarDatas);
+            QuestController.Instance.LoadQuestProgress(new List<QuestProgress>());
         }
 
         SaveGame();
-        
-        Debug.Log("Đã khởi tạo Game Mới thành công!");
+        Debug.Log("Đã khởi tạo dữ liệu cho Game Mới!");
     }
 
-    // Xử lý new game
-    public void StartNewGame()
-    {
-        StartCoroutine(NewGameRoutine());
-    }
-
+    public void StartNewGame() { StartCoroutine(NewGameRoutine()); }
     private IEnumerator NewGameRoutine()
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("SampleScene");
         while (!asyncLoad.isDone) yield return null;
-        
         yield return new WaitForEndOfFrame(); 
-
         FindAllReferences();
         NewGame();
     }
 
-    // Xử lý continue game
-    public void StartContinueGame()
-    {
-        StartCoroutine(ContinueGameRoutine());
-    }
-
+    public void StartContinueGame() { StartCoroutine(ContinueGameRoutine()); }
     private IEnumerator ContinueGameRoutine()
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("SampleScene");
         while (!asyncLoad.isDone) yield return null;
-        
         yield return new WaitForEndOfFrame(); 
-
         FindAllReferences();
         LoadGame();
     }

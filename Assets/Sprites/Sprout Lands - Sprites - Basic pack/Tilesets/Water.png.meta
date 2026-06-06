@@ -75,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -85,6 +85,19 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
     buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -137,8 +150,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fab4b46dfd551f5469391ef2f0a7075f
-      internalID: 1396944733
+      spriteID: 2e3eec0209e6c3c4faba0c6e3c44d441
+      internalID: -933337686
       vertices: []
       indices: 
       edges: []
@@ -159,8 +172,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f890b91d00b39614e945e14323aee60c
-      internalID: -224393449
+      spriteID: db6e6b198e343a242ab63b9b00a7e27a
+      internalID: -135562221
       vertices: []
       indices: 
       edges: []
@@ -181,8 +194,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 321f713b39f0721408af833eda6e6449
-      internalID: -925460007
+      spriteID: 077a122a39b579f46b2af5ed56b7b67e
+      internalID: 30712792
       vertices: []
       indices: 
       edges: []
@@ -191,7 +204,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 29d02a5f866b4804eb44fe8f4d8fb7a4
+    spriteID: b90c680fd754b1545bbeff0f553ee43a
     internalID: 0
     vertices: []
     indices: 
@@ -202,9 +215,9 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       Water_0: 6049605792901559095
-      Water_1: 1396944733
-      Water_2: -224393449
-      Water_3: -925460007
+      Water_1: -933337686
+      Water_2: -135562221
+      Water_3: 30712792
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
