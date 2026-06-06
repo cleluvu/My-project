@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdbecad0d3f79bf4ea28cf0835127c83, type: 3}
+  m_Name: Caretaker
+  m_EditorClassIdentifier: 
+  employeeID: 3
+  employeeName: Caretaker
+  avatar: {fileID: -7527145504033472756, guid: 8bfd29eae1fbaad4594d13c4444fea79, type: 3}
+  hirePrice: 1
+  hireDurationDays: 3
+  role: 0
+  agentPrefab: {fileID: 5364359195520430458, guid: 809ce80795682b941b5b8d4204ea59f1, type: 3}

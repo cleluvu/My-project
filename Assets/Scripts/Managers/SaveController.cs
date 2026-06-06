@@ -112,11 +112,20 @@ public class SaveController : MonoBehaviour
             data.questProgressData = QuestController.Instance.activateQuests;
         }
 
+        // 12. Lưu dân làng
+        NPCCoreSystems[] allNPCs = FindObjectsByType<NPCCoreSystems>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        data.npcSaveData = new List<NPCSaveData>();
+        foreach(NPCCoreSystems npc in allNPCs)
+        {
+            data.npcSaveData.Add(npc.GetSaveData());
+        }
+
         // Chuyển thành JSON và lưu xuống ổ cứng
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(savePath, json);
         
         Debug.Log("Đã Save toàn bộ dữ liệu game thành công!");
+        Debug.Log("Đường dẫn file save: " + Application.persistentDataPath);
     }
 
     public void LoadGame()
@@ -199,6 +208,20 @@ public class SaveController : MonoBehaviour
         if (QuestController.Instance != null && data.questProgressData != null)
         {
             QuestController.Instance.LoadQuestProgress(data.questProgressData);
+        }
+
+        //12. Load dân làng
+        NPCCoreSystems[] allNPCs = FindObjectsByType<NPCCoreSystems>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        if (data.npcSaveData != null)
+        {
+            foreach(NPCCoreSystems npc in allNPCs)
+            {
+                NPCSaveData npcData = data.npcSaveData.Find(n => n.npcID == npc.gameObject.name);
+                if (npcData != null)
+                {
+                    npc.RestoreData(npcData);
+                }
+            }
         }
 
         Debug.Log("Đã tải dữ liệu (Load Game) thành công!");

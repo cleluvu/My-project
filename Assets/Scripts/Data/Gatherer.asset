@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   employeeID: 2
   employeeName: Gatherer
-  avatar: {fileID: -7527145504033472756, guid: 593fba4955599374cba07befa08b3fe2, type: 3}
+  avatar: {fileID: -7527145504033472756, guid: b18d501287dda1b4e869538a016fb47c, type: 3}
   hirePrice: 1
   hireDurationDays: 3
   role: 2
-  agentPrefab: {fileID: 8452056158034708193, guid: 51d444c27f86bd74c94b396499cbd20d, type: 3}
+  agentPrefab: {fileID: 3717926291492692202, guid: f1e7674aad4866c4d9a43bddec56b1aa, type: 3}

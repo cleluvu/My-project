@@ -84,4 +84,7 @@ public class SaveData
 
     // Lưu tiến độ Quest
     public List<QuestProgress> questProgressData = new List<QuestProgress>();
+
+    // Lưu dân làng 
+    public List<NPCSaveData> npcSaveData = new List<NPCSaveData>();
 }
