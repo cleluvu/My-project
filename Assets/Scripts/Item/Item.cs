@@ -2,7 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public enum ItemType { None, Axe, Pickaxe, Hoe, WateringCan, Seed, Food }
+// THÊM: Danh mục Animal vào cuối enum để hệ thống Shop nhận diện gia súc
+public enum ItemType { None, Axe, Pickaxe, Hoe, WateringCan, Seed, Food, Animal }
 
 public class Item : MonoBehaviour
 {
@@ -13,6 +14,10 @@ public class Item : MonoBehaviour
     public ItemType itemType; 
     public string seedName; 
     private TMP_Text quantityText;
+
+    [Header("Animal Settings (Only for Animal Type)")]
+    [Tooltip("Kéo Prefab con Gà/Bò thật (vật thể di chuyển ngoài map có gắn script Entity) vào đây.")]
+    public GameObject animalEntityPrefab; 
     
     //Shop
     public int buyPrice = 10;
