@@ -106,7 +106,7 @@ Transform:
   m_GameObject: {fileID: 3436486768330592573}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.25, y: 8.82, z: 0}
+  m_LocalPosition: {x: 6.177586, y: -1.3887608, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -277,7 +277,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: chicken_1
   moveZone: {fileID: 0}
-  moveSpeed: 0.5
+  moveSpeed: 2
   minWaitTime: 1
   maxWaitTime: 3
   foodItemID: 2

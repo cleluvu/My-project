@@ -112,20 +112,11 @@ public class SaveController : MonoBehaviour
             data.questProgressData = QuestController.Instance.activateQuests;
         }
 
-        // 12. Lưu dân làng
-        NPCCoreSystems[] allNPCs = FindObjectsByType<NPCCoreSystems>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        data.npcSaveData = new List<NPCSaveData>();
-        foreach(NPCCoreSystems npc in allNPCs)
-        {
-            data.npcSaveData.Add(npc.GetSaveData());
-        }
-
         // Chuyển thành JSON và lưu xuống ổ cứng
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(savePath, json);
         
         Debug.Log("Đã Save toàn bộ dữ liệu game thành công!");
-        Debug.Log("Đường dẫn file save: " + Application.persistentDataPath);
     }
 
     public void LoadGame()
@@ -210,20 +201,6 @@ public class SaveController : MonoBehaviour
             QuestController.Instance.LoadQuestProgress(data.questProgressData);
         }
 
-        //12. Load dân làng
-        NPCCoreSystems[] allNPCs = FindObjectsByType<NPCCoreSystems>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        if (data.npcSaveData != null)
-        {
-            foreach(NPCCoreSystems npc in allNPCs)
-            {
-                NPCSaveData npcData = data.npcSaveData.Find(n => n.npcID == npc.gameObject.name);
-                if (npcData != null)
-                {
-                    npc.RestoreData(npcData);
-                }
-            }
-        }
-
         Debug.Log("Đã tải dữ liệu (Load Game) thành công!");
     }
 
@@ -286,6 +263,7 @@ public class SaveController : MonoBehaviour
         }
     }
 
+    // --- ĐÃ SỬA LỖI: KHÔNG CƯỠNG ÉP GỌI SAVEGAME KHI ĐANG ĐỨNG Ở SCENE MENU (GIÚP THÔNG NÚT CONFIRM) ---
     public void NewGame()
     {
         if (File.Exists(savePath)) File.Delete(savePath);
@@ -301,24 +279,32 @@ public class SaveController : MonoBehaviour
         if (inventoryController != null) inventoryController.SetInventoryItem(new List<InventorySaveData>());
         if (hotbarController != null) hotbarController.SetHotbarItem(new List<InventorySaveData>());
 
-        // Làm trống tiến độ nhiệm vụ khi bắt đầu game mới hoàn toàn
         if (QuestController.Instance != null)
         {
             QuestController.Instance.LoadQuestProgress(new List<QuestProgress>());
         }
 
-        SaveGame();
-        Debug.Log("Đã khởi tạo dữ liệu cho Game Mới!");
+        Debug.Log("Đã dọn dẹp bộ nhớ file save cũ thành công!");
     }
 
     public void StartNewGame() { StartCoroutine(NewGameRoutine()); }
     private IEnumerator NewGameRoutine()
     {
+        // 1. Gọi hàm dọn sạch dữ liệu cũ khi người chơi đang ở Menu
+        NewGame();
+
+        // 2. Đổi Scene sang Map chơi game thực tế
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("SampleScene");
         while (!asyncLoad.isDone) yield return null;
+        
+        // Chờ đồng bộ vật lý và camera hoàn tất để không dính lỗi Null
         yield return new WaitForEndOfFrame(); 
+        yield return new WaitForFixedUpdate();
+
         FindAllReferences();
-        NewGame();
+
+        // 3. Lúc này toàn bộ dữ liệu map mới đã load xong -> Tiến hành tạo file Save game mới tinh đầu tiên!
+        SaveGame();
     }
 
     public void StartContinueGame() { StartCoroutine(ContinueGameRoutine()); }
@@ -326,8 +312,14 @@ public class SaveController : MonoBehaviour
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("SampleScene");
         while (!asyncLoad.isDone) yield return null;
+        
+        // Chờ hệ thống thực thể ngoài map thức tỉnh hoàn tất
         yield return new WaitForEndOfFrame(); 
+        yield return new WaitForFixedUpdate();
+
         FindAllReferences();
+        
+        // Tiến hành nạp dữ liệu từ file save cứng lên map
         LoadGame();
     }
 
