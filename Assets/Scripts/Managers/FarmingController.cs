@@ -107,6 +107,21 @@ public class FarmingController : MonoBehaviour
         }
     }
 
+    // Đất không trồng trọt cây khi qua ngày mới sẽ mọc cỏ
+    public void ResetWasteland()
+    {
+        foreach(var x in farmData)
+        {
+            FarmTileData tile = x.Value;
+            if (!tile.isCropped && tile.state == SoilState.Tilled)
+            {
+                tile.state = SoilState.Normal;
+            }
+
+            UpdateTileVisual(x.Key);
+        }
+    }
+
     // Thu hoạch
     private void HarvestCrop(Vector3Int pos)
     {

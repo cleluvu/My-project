@@ -132,54 +132,55 @@ public class PlayerManager : MonoBehaviour
         stateTools = toolID;
         movement = Vector2.zero;
         movesByMouse = false;
+        rb.linearVelocity = Vector2.zero;
 
-        // 1: Rìu (Chặt cây)
+        // 1: Rìu
         if (stateTools == 1) 
         {
             StartAction("chop");
             PositionAttackZone();
             if(attackZone != null) attackZone.SetActive(true);
         }
-        // 7: Cúp (Đào đá - Tách riêng Rìu và Cúp để khỏi đập lộn)
+        // 7: Cúp
         else if (stateTools == 7) 
         {
             StartAction("chop"); 
             PositionAttackZone();
             if(attackZone != null) attackZone.SetActive(true);
         }
-        // 2: Cuốc (Xới đất)
+        // 2: Cuốc
         else if (stateTools == 2) 
         {
             StartAction("till");
             Vector3Int cellPos = Vector3Int.FloorToInt(GetTargetGridPosition());
             FarmingController.Instance.TillSoil(cellPos);
         }
-        // 3: Bình tưới (Tưới nước)
+        // 3: Bình tưới
         else if (stateTools == 3) 
         {
             StartAction("water");
             Vector3Int cellPos = Vector3Int.FloorToInt(GetTargetGridPosition());
             FarmingController.Instance.WaterSoil(cellPos);
         }
-        // 4: Hạt giống (Gieo hạt)
+        // 4: Hạt giống
         else if (stateTools == 4) 
         {
             Vector3Int cellPos = Vector3Int.FloorToInt(GetTargetGridPosition());
 
-            // QUAN TRỌNG: Gọi hàm trồng và lấy kết quả trả về
+            // Gọi hàm trồng và lấy kết quả trả về
             bool success = FarmingController.Instance.PlantSeed(cellPos, extraData);
 
             if (success)
             {
                 StartAction("plant_" + extraData);
-                return true; // Trồng được mới trả về true
+                return true;
             }
-            return false; // Không trồng được (đất chưa cày, đã có cây...)
+            return false;
         }
-        // 6: Thức ăn (Cho ăn)
+        // 6: Thức ăn
         else if (stateTools == 6) 
         {
-            StartAction("chop"); // Dùng chung anim vươn tay
+            StartAction("chop");
             PositionAttackZone();
             if(attackZone != null) attackZone.SetActive(true);
         }
