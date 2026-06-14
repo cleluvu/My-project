@@ -51,11 +51,12 @@ public class AgentTaskManager : MonoBehaviour
     private Transform dummyMarker; 
 
     private MyAgent myAgent;
+    DayAndNight dayAndNight;
 
     private void Start()
     {
-        DayAndNight timeManager = Object.FindFirstObjectByType<DayAndNight>();
-        if (timeManager != null) timeManager.onNewDayStarted.AddListener(OnNewDay);
+        dayAndNight = Object.FindFirstObjectByType<DayAndNight>();
+        if (dayAndNight != null) dayAndNight.onNewDayStarted.AddListener(OnNewDay);
     }
 
     private void Awake()
@@ -95,7 +96,6 @@ public class AgentTaskManager : MonoBehaviour
         if (isLeaving && dockTarget != null) return dockTarget;
 
         // Quản lý thời gian làm việc
-        DayAndNight dayAndNight = Object.FindAnyObjectByType<DayAndNight>();
         bool isWorkTime = false; 
         if (dayAndNight != null)
         {
@@ -114,8 +114,9 @@ public class AgentTaskManager : MonoBehaviour
         if (role == AgentRole.AnimalCaretaker)
         {
             if (currentTargetEntity != null && currentTargetEntity.isHungry && 
-                InventoryController.Instance != null && InventoryController.Instance.HasItemGlobal(currentTargetEntity.foodItemID))
+                InventoryController.Instance != null && InventoryController.Instance.HasItemGlobal(currentTargetEntity.foodItemID)){
                 return currentTargetEntity.transform;
+            }
             
             ResetAllTargets(); 
             Entity bestEntity = null;
@@ -155,8 +156,13 @@ public class AgentTaskManager : MonoBehaviour
                 {
                     if (tile.position == currentTargetTile.Value)
                     {
-                        if (currentFarmAction == FarmAction.Watering && tile.state == SoilState.Tilled && !string.IsNullOrEmpty(tile.plantedCropID)) stillValid = true;
-                        else if (currentFarmAction == FarmAction.Planting && (tile.state == SoilState.Tilled || tile.state == SoilState.Watered) && string.IsNullOrEmpty(tile.plantedCropID) && InventoryController.Instance.HasItemGlobal(seedID)) stillValid = true;
+                        if (currentFarmAction == FarmAction.Watering &&
+                            tile.state == SoilState.Tilled &&
+                            !string.IsNullOrEmpty(tile.plantedCropID)) stillValid = true;
+                        else if (currentFarmAction == FarmAction.Planting && 
+                            (tile.state == SoilState.Tilled || tile.state == SoilState.Watered) && 
+                            string.IsNullOrEmpty(tile.plantedCropID) && 
+                            InventoryController.Instance.HasItemGlobal(seedID)) stillValid = true;
                         break;
                     }
                 }
@@ -191,7 +197,8 @@ public class AgentTaskManager : MonoBehaviour
                 closestDist = Mathf.Infinity;
                 foreach (var tile in farmDataList)
                 {
-                    if ((tile.state == SoilState.Tilled || tile.state == SoilState.Watered) && string.IsNullOrEmpty(tile.plantedCropID) && !claimedTiles.Contains(tile.position))
+                    if ((tile.state == SoilState.Tilled || tile.state == SoilState.Watered) && 
+                        string.IsNullOrEmpty(tile.plantedCropID) && !claimedTiles.Contains(tile.position))
                     {
                         Vector3 tileWorldPos = FarmingController.Instance.farmingTilemap.GetCellCenterWorld(tile.position);
                         float distance = Vector2.Distance(transform.position, tileWorldPos);
@@ -293,7 +300,7 @@ public class AgentTaskManager : MonoBehaviour
         if (isLeaving && dockTarget != null)
         {
             float distToDock = Vector2.Distance(transform.position, dockTarget.position);
-            if (distToDock < 1.0f)
+            if (distToDock < 2.0f)
             {
                 HireManager.Instance.RemoveAgent(this);
                 Destroy(gameObject);
@@ -322,12 +329,12 @@ public class AgentTaskManager : MonoBehaviour
                         if (isPlanted)
                         {
                             InventoryController.Instance.RemoveItemGlobal(seedID, 1);
-                            Debug.Log("Farmer đã trồng và trừ đi 1 hạt giống!");
+                            // Debug.Log("Farmer đã trồng và trừ đi 1 hạt giống!");
                         }
                     }
                     else
                     {
-                        Debug.Log("Farmer không còn hạt giống để trồng! Đang bỏ qua...");
+                        // Debug.Log("Farmer không còn hạt giống để trồng");
                     }
                 }
                 
@@ -400,6 +407,5 @@ public class AgentTaskManager : MonoBehaviour
 
         isLeaving = true;
         ResetAllTargets();
-        Debug.Log($"Nhân viên {gameObject.name} đã bị sa thải!");
     }
 }

@@ -78,7 +78,7 @@ public class HireManager : MonoBehaviour
         int startIndex = currentPage * itemsPerPage;
         int endIndex = Mathf.Min(startIndex + itemsPerPage, availableEmployees.Count);
 
-        // Sinh ra danh sách theo dộ dài danh sách
+        // Sinh ra các slot theo dộ dài danh sách
         for (int i = startIndex; i < endIndex; i++)
         {
             EmployeeData emp = availableEmployees[i];

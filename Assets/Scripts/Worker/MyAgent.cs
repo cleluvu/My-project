@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class MyAgent : MonoBehaviour 
 {
-    [Header("Hoạt ảnh & Di chuyển")]
+    [Header("Hoạt ảnh và di chuyển")]
     public Animator anim;
     public float moveSpeed = 5f;
     public Rigidbody2D agentRb;

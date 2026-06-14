@@ -21,7 +21,7 @@ public class FarmerPathController : MonoBehaviour
         }
 
         if (seeker == null) {
-            Debug.LogError("Vẫn không tìm thấy Seeker trên đối tượng Agent!");
+            // Debug.LogError("Không tìm thấy Seeker");
         }
 
         InvokeRepeating("UpdatePath", 0f, 1.0f);
