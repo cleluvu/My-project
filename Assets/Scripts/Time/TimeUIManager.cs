@@ -76,7 +76,7 @@ public class TimeUIManager : MonoBehaviour
 
     public void X3SpeedTimeGame()
     {
-        dayAndNight.timeMultiplier = 3f;
+        dayAndNight.timeMultiplier = 6f;
 
         x3Img.color = Color.yellow;
         StartCoroutine(ScaleButton(x3Rt, Vector3.one * 1.05f));

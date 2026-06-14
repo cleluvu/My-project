@@ -18,6 +18,7 @@ public class FarmTileData
     public String plantedCropID = "";
     public int currentGrowthStage = 0;
     public bool isCropped = false;
+    public int dryDaysCount = 0; // Đếm số ngày liên tiếp không được tưới nước
 }
 
 [Serializable]
