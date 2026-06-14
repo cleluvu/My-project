@@ -1,4 +1,14 @@
+using System.Collections.Generic;
 using UnityEngine;
+
+[System.Serializable]
+public class SocialMatrixSaveData
+{
+    public string targetNpcID;
+    public float friendship;
+    public float trust;
+    public float familiarity;
+}
 
 [System.Serializable]
 public class NPCSaveData
@@ -18,4 +28,7 @@ public class NPCSaveData
 
     // State
     public int lastInteractedDay;
+
+    // Social Matrix
+    public List<SocialMatrixSaveData> socialMatrixList = new List<SocialMatrixSaveData>();
 }

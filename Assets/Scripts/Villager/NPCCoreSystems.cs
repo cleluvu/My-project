@@ -7,7 +7,7 @@ using Pathfinding;
 [RequireComponent(typeof(Animator))] 
 public class NPCCoreSystems : MonoBehaviour
 {
-    [Header("Personality (Fixed)")]
+    [Header("Personality")]
     public PersonalityType personality;
 
     [Header("Dynamic Systems")]
@@ -25,7 +25,7 @@ public class NPCCoreSystems : MonoBehaviour
     public GameObject[] giftItems; 
 
     [Header("Multi-Agent Social Systems")]
-    public Dictionary<int, Relationship> socialMatrix = new Dictionary<int, Relationship>();
+    public Dictionary<string, Relationship> socialMatrix = new Dictionary<string, Relationship>();
 
     private NPC originalNPC;
     private AIPath aiPath;
@@ -77,7 +77,7 @@ public class NPCCoreSystems : MonoBehaviour
 
     public Relationship GetRelationship(GameObject target)
     {
-        int targetID = target.GetInstanceID();
+        string targetID = target.name;
         if (!socialMatrix.ContainsKey(targetID))
         {
             socialMatrix[targetID] = new Relationship();
@@ -146,7 +146,7 @@ public class NPCCoreSystems : MonoBehaviour
     {
         if (!CanInteractWithPlayerToday()) return; 
 
-        Debug.Log($"[Interaction] Player vừa nói chuyện với {gameObject.name}!");
+        Debug.Log($"Player vừa nói chuyện với {gameObject.name}!");
         
         // Tăng mức độ giao tiếp xã hội
         currentNeeds.socialNeed = Mathf.Clamp(currentNeeds.socialNeed + 30f, 0, 100);
@@ -227,7 +227,7 @@ public class NPCCoreSystems : MonoBehaviour
     public NPCSaveData GetSaveData()
     {
         NPCSaveData data = new NPCSaveData();
-        data.npcID = gameObject.name; // Dùng tên làm ID
+        data.npcID = gameObject.name; 
         data.position = transform.position;
 
         data.hunger = currentNeeds.hunger;
@@ -239,6 +239,19 @@ public class NPCCoreSystems : MonoBehaviour
         data.playerFamiliarity = playerRelationship.familiarity;
 
         data.lastInteractedDay = lastInteractedDay; 
+
+        data.socialMatrixList = new List<SocialMatrixSaveData>();
+        foreach (var kvp in socialMatrix)
+        {
+            SocialMatrixSaveData relData = new SocialMatrixSaveData
+            {
+                targetNpcID = kvp.Key,
+                friendship = kvp.Value.friendship,
+                trust = kvp.Value.trust,
+                familiarity = kvp.Value.familiarity
+            };
+            data.socialMatrixList.Add(relData);
+        }
 
         return data;
     }
@@ -257,5 +270,19 @@ public class NPCCoreSystems : MonoBehaviour
         playerRelationship.familiarity = data.playerFamiliarity;
 
         lastInteractedDay = data.lastInteractedDay;
+
+        socialMatrix.Clear();
+        if (data.socialMatrixList != null)
+        {
+            foreach (var relData in data.socialMatrixList)
+            {
+                Relationship rel = new Relationship();
+                rel.friendship = relData.friendship;
+                rel.trust = relData.trust;
+                rel.familiarity = relData.familiarity;
+                
+                socialMatrix[relData.targetNpcID] = rel;
+            }
+        }
     }
 }

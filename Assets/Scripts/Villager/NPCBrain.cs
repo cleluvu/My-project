@@ -145,13 +145,12 @@ public class NPCBrain : Agent
 
                                     // Tích lũy điểm vào các bể phần thưởng tương ứng
                                     if (coreSystems.currentNeeds.socialNeed < 50f) 
-                                        stepIndividualReward += 0.02f; // Lợi ích cá nhân
+                                        stepIndividualReward += 0.02f;
                                     
                                     if (otherNPC.currentNeeds.socialNeed < 50f) 
                                     {
-                                        stepSocialReward += 0.04f; // Lợi ích xã hội
-                                        
-                                        // Thưởng đồng bộ cực kỳ quan trọng cho MARL
+                                        stepSocialReward += 0.04f;
+                                    
                                         NPCBrain otherBrain = otherNPC.GetComponent<NPCBrain>();
                                         if (otherBrain != null) otherBrain.AddReward(0.04f);
                                     }
@@ -166,7 +165,7 @@ public class NPCBrain : Agent
                                 Relationship theirRelWithMe = otherNPC.GetRelationship(this.gameObject);
                                 if (theirRelWithMe.trust >= 30f)
                                 {
-                                    stepSocialReward += 0.05f; // Giao thương thúc đẩy nền kinh tế chung
+                                    stepSocialReward += 0.05f;
                                     interactedSuccessfully = true;
                                     break;
                                 }
@@ -184,7 +183,7 @@ public class NPCBrain : Agent
                         {
                             if (coreSystems.playerRelationship.trust >= 30f)
                             {
-                                stepIndividualReward += 0.05f; // Trade với người chơi mang lại tài nguyên cá nhân
+                                stepIndividualReward += 0.05f;
                                 interactedSuccessfully = true;
                                 break;
                             }
@@ -223,7 +222,6 @@ public class NPCBrain : Agent
         // Thất bại
         if (coreSystems.currentNeeds.energy <= 0 || coreSystems.currentNeeds.hunger <= 0)
         {
-            Debug.Log($"{gameObject.name} đã kiệt sức!");
             AddReward(-1.0f);
             EndEpisode();
         }
@@ -232,7 +230,6 @@ public class NPCBrain : Agent
         if (coreSystems.timeManager != null && 
             coreSystems.timeManager.allTimeFromBegin - startTime >= coreSystems.timeManager.dayDuration)
         {
-            Debug.Log($"{gameObject.name} sống sót qua 1 ngày!");
             AddReward(1.0f); 
             EndEpisode();
         }

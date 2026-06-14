@@ -32,7 +32,7 @@ public class NPCActionController : MonoBehaviour
     public void ExecuteAction(NPCAction action)
     {
 
-        float distanceToPlayer = 100f; // Mặc định ở rất xa
+        float distanceToPlayer = 100f;
         if (playerTransform != null)
         {
             distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
@@ -59,7 +59,6 @@ public class NPCActionController : MonoBehaviour
                     }
                     else
                     {
-                        Debug.Log($"[Trade Failed] {gameObject.name} từ chối giao dịch! (Trust: {coreSystems.playerRelationship.trust}/30)");
                         MoveToRandomLocation(); 
                     }
                 }
@@ -83,7 +82,7 @@ public class NPCActionController : MonoBehaviour
                     {
                         StopMovement();
 
-                        if (coreSystems.currentHour >= 11 && coreSystems.currentHour <= 16)
+                        if (coreSystems.currentHour >= 11 && coreSystems.currentHour <= 17)
                         {
                             coreSystems.currentNeeds.energy = Mathf.Clamp(coreSystems.currentNeeds.energy + 30f * Time.deltaTime, 0, 100);
                             coreSystems.currentNeeds.hunger = Mathf.Clamp(coreSystems.currentNeeds.hunger + 40f * Time.deltaTime, 0, 100);
@@ -109,7 +108,6 @@ public class NPCActionController : MonoBehaviour
                     float distanceToWork = Vector3.Distance(transform.position, workTask.targetLocation.position);
                     if (distanceToWork < 1.5f)
                     {
-                        // Đứng im làm việc
                         StopMovement();
                         // Làm việc tiêu hao năng lượng nhiều hơn
                         coreSystems.currentNeeds.energy = Mathf.Clamp(coreSystems.currentNeeds.energy - 2f * Time.deltaTime, 0, 100);
@@ -136,15 +134,12 @@ public class NPCActionController : MonoBehaviour
                 break;
                 
             case NPCAction.IgnorePlayer:
-                // Nếu lỡ đứng gần thì lập tức hủy tương tác và bỏ đi chỗ khác
                 if (distanceToPlayer <= 3f)
                 {
-                    // Chọn một điểm ngẫu nhiên để lách né người chơi đi chỗ khác
                     MoveToRandomLocation(); 
                 }
                 else
                 {
-                    // Nếu ở xa rồi thì cứ tiếp tục hành trình làm việc của mình
                     if (coreSystems.currentTask != null && coreSystems.currentTask.targetLocation != null)
                     {
                         MoveToTarget(coreSystems.currentTask.targetLocation.position);
