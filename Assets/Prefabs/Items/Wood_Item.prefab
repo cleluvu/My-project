@@ -208,7 +208,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 4063756357536327656, guid: b96b582f65649d84cb135044840a4e14, type: 3}
+  m_Sprite: {fileID: 6134250156721728216, guid: c4914c96bdc631b498e9d1572bd516d2, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -261,6 +261,7 @@ MonoBehaviour:
   quantity: 1
   itemType: 0
   seedName: 
+  animalEntityPrefab: {fileID: 0}
   buyPrice: 1
   sellPriceMultiple: 0.5
 --- !u!212 &-7067174450226795081
@@ -307,7 +308,7 @@ SpriteRenderer:
   m_SortingLayerID: 1868964797
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 4063756357536327656, guid: b96b582f65649d84cb135044840a4e14, type: 3}
+  m_Sprite: {fileID: 6134250156721728216, guid: c4914c96bdc631b498e9d1572bd516d2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
