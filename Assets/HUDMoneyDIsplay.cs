@@ -4,7 +4,6 @@ using TMPro;
 public class HUDMoneyDisplay : MonoBehaviour
 {
     [Header("UI Components")]
-    [Tooltip("Kéo cái Text Mesh Pro hiển thị tiền ngoài HUD màn hình vào đây.")]
     [SerializeField] private TMP_Text moneyText;
 
     private void Start()
@@ -25,7 +24,7 @@ public class HUDMoneyDisplay : MonoBehaviour
 
     private void OnDestroy()
     {
-        // Hủy đăng ký sự kiện khi Object bị hủy để tránh lỗi rác bộ nhớ (Memory Leak)
+        // Hủy đăng ký sự kiện khi Object bị hủy để tránh lỗi rác bộ nhớ
         if (CurrencyController.Instance != null)
         {
             CurrencyController.Instance.OnGoldChanged -= UpdateHUDMoneyText;

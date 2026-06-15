@@ -14,7 +14,6 @@ public class InventoryController : MonoBehaviour
 
     public static InventoryController Instance { get; private set; }
 
-    // --- ĐỒNG BỘ THEO TẬP #27: EVENT & CACHE ĐẾM TIẾN ĐỘ QUEST ---
     public System.Action onInventoryChanged;
     private Dictionary<int, int> itemsCountCache = new Dictionary<int, int>();
 
@@ -33,7 +32,7 @@ public class InventoryController : MonoBehaviour
     {
         itemDictionary = FindAnyObjectByType<ItemDictionary>();
 
-        // 1. TỰ ĐỘNG TÌM KHUNG HÒM ĐỒ KỂ CẢ KHI ĐANG ẨN TRONG SCENE
+        // TỰ ĐỘNG TÌM KHUNG HÒM ĐỒ
         if (inventoryPanel == null)
         {
             InventoryPanelTag uiTag = FindAnyObjectByType<InventoryPanelTag>(FindObjectsInactive.Include);
@@ -47,7 +46,7 @@ public class InventoryController : MonoBehaviour
             }
         }
 
-        // 2. TỰ ĐỘNG SINH SLOT TRỐNG KHI KHỞI CHẠY KHÔNG QUA FILE SAVE (DÙNG CHO SAMPLE SCENE / NEW GAME)
+        // TỰ ĐỘNG SINH SLOT TRỐNG KHI KHỞI CHẠY KHÔNG QUA FILE SAVE
         if (inventoryPanel != null && inventoryPanel.transform.childCount == 0)
         {
             for (int i = 0; i < slotCount; i++)
@@ -62,14 +61,11 @@ public class InventoryController : MonoBehaviour
         RebuildItemCounts();
     }
 
-    /// <summary>
-    /// Hàm quét qua cả Kho đồ chính và Hotbar để tính toán tổng số lượng của từng loại vật phẩm.
-    /// </summary>
     public void RebuildItemCounts()
     {
         itemsCountCache.Clear();
 
-        // 1. Quét vật phẩm trong Inventory Panel (Hòm đồ chính)
+        // Quét vật phẩm trong Inventory Panel
         if (inventoryPanel != null)
         {
             foreach (Transform slotTransform in inventoryPanel.transform)
@@ -87,7 +83,7 @@ public class InventoryController : MonoBehaviour
             }
         }
 
-        // 2. Quét vật phẩm trong Hotbar Panel (Thanh công cụ nhanh)
+        // Quét vật phẩm trong Hotbar Panel
         HotbarController hotbar = Object.FindFirstObjectByType<HotbarController>();
         if (hotbar != null && hotbar.hotbarPanel != null)
         {
@@ -112,9 +108,7 @@ public class InventoryController : MonoBehaviour
 
     public Dictionary<int, int> GetItemCounts() => itemsCountCache;
 
-    /// <summary>
-    /// Hàm gọi xử lý nhặt vật phẩm từ dưới đất lên kho đồ.
-    /// </summary>
+
     public bool AddItem(GameObject groundItemObj)
     {
         Item groundItem = groundItemObj.GetComponent<Item>();
@@ -122,30 +116,29 @@ public class InventoryController : MonoBehaviour
 
         HotbarController hotbar = Object.FindFirstObjectByType<HotbarController>();
         
-        // 1. (Giữ nguyên) Ưu tiên gom cụm (Stack) vào đồ trùng loại ở Hotbar trước
+        // Ưu tiên gom cụm (Stack) vào đồ trùng loại ở Hotbar trước
         if (hotbar != null && TryStackItemInPanel(groundItem, hotbar.hotbarPanel.transform)) 
         {
             RebuildItemCounts();
             return true;
         }
         
-        // 2. (Giữ nguyên) Ưu tiên gom cụm (Stack) vào đồ trùng loại ở Hòm chính trước
+        // Ưu tiên gom cụm (Stack) vào đồ trùng loại ở Hòm chính trước
         if (TryStackItemInPanel(groundItem, inventoryPanel.transform)) 
         {
             RebuildItemCounts();
             return true;
         }
 
-        // ================= ĐỔI VỊ TRÍ TẠI ĐÂY =================
 
-        // 3. (ĐƯA LÊN TRÊN): Nếu không trùng loại, ƯU TIÊN tìm ô TRỐNG ở Hòm chính (Inventory) để nhét vào trước!
+        // Nếu không trùng loại, ưu tiên tìm ô trống ở Hòm chính (Inventory) để nhét vào trước
         if (TryAddToEmptySlotInPanel(groundItem, inventoryPanel.transform)) 
         {
             RebuildItemCounts();
             return true;
         }
 
-        // 4. (ĐẨY XUỐNG DƯỚI): Khi Hòm chính đã đầy sạch ô trống, lúc này mới tràn xuống ô TRỐNG của Hotbar
+        // Khi Hòm chính đã đầy sạch ô trống, lúc này mới tràn xuống ô trống của Hotbar
         if (hotbar != null && TryAddToEmptySlotInPanel(groundItem, hotbar.hotbarPanel.transform)) 
         {
             RebuildItemCounts();

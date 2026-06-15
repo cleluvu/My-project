@@ -16,7 +16,6 @@ public class DialogueController : MonoBehaviour
 
     [Header("Choice UI (optional)")]
     public GameObject choicePanel;
-    [Tooltip("Kéo GameObject nút (ChoiceButton1, …). Có thể gán DialogueChoiceButton hoặc để trống — runtime tự thêm.")]
     public GameObject[] choiceButtons;
 
     public bool IsShowingChoices { get; private set; }

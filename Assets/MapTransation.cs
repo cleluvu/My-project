@@ -33,7 +33,6 @@ public class MapTransition : MonoBehaviour
                 // 1. Cập nhật vùng giới hạn Camera mới cho Cinemachine
                 confiner.BoundingShape2D = targetMapBounds;
                 
-                // --- ĐÃ SỬA: Ép Cinemachine xóa bộ nhớ cũ và nhảy LẬP TỨC sang Map mới ---
                 confiner.InvalidateCache(); 
                 
                 // Tìm kiếm camera chính của Cinemachine để ép nó dịch chuyển tức thời không chờ Damping

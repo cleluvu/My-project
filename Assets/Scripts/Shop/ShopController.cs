@@ -31,7 +31,6 @@ public class ShopController : MonoBehaviour
     public Button cancelTransactionButton;
 
     [Header("Animal Spawner Settings")]
-    [Tooltip("Kéo Object điểm chỉ định xuất hiện gia súc (Ví dụ: BarnSpawnPoint) ngoài thế giới vào đây.")]
     public Transform animalSpawnPoint;
 
     private ItemDictionary itemDictionary;
@@ -293,7 +292,6 @@ public class ShopController : MonoBehaviour
         }
     }
 
-    // --- ĐÃ CHỈNH SỬA TOÀN DIỆN: THỰC THI GIAO DỊCH MUA GIA SÚC ---
     private void ExecuteTransaction()
     {
         if (selectedItem == null || selectedSlot == null) return;
@@ -308,7 +306,6 @@ public class ShopController : MonoBehaviour
                 return;
             }
 
-            // KIỂM TRA: Nếu là vật phẩm thuộc loại mua Động Vật (Animal)
             if (selectedItem.itemType == ItemType.Animal)
             {
                 // Kiểm tra xem Item này đã được kéo gán Prefab con vật thực thể thật chưa
@@ -318,7 +315,7 @@ public class ShopController : MonoBehaviour
                     CurrencyController.Instance.SpendGold(totalCost);
                     RemoveItemFromShop(selectedItem.ID, currentSelectedQuantity);
 
-                    // Gọi hàm tự chế kích hoạt Spawn thực thể ra ngoài Map
+                    // Gọi hàm kích hoạt Spawn thực thể ra ngoài Map
                     SpawnAnimalToWorld(selectedItem.animalEntityPrefab, currentSelectedQuantity);
                 }
                 else
@@ -377,7 +374,6 @@ public class ShopController : MonoBehaviour
         ResetAllSubPanels();
     }
 
-    // --- HÀM TỰ CHẾ: SPAWN ĐỘNG VẬT RA THẾ GIỚI KHÔNG TRÙNG VỊ TRÍ ---
     private void SpawnAnimalToWorld(GameObject entityPrefab, int quantity)
     {
         // Xác định vị trí gốc làm trung tâm để đẻ động vật

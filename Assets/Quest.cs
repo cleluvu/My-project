@@ -26,13 +26,11 @@ public class Quest : ScriptableObject
     public string description;
     public List<QuestObjective> objectives;
 
-    // --- DANH SÁCH PHẦN THƯỞNG CẤU HÌNH TRÊN INSPECTOR (TẬP #29) ---
     [Header("Quest Rewards")]
     public List<QuestReward> rewards;
 
     private void OnEnable()
     {
-        // Đảm bảo ID nhiệm vụ là duy nhất
         if (string.IsNullOrEmpty(questID))
         {
             questID = questName + Guid.NewGuid().ToString();
@@ -90,3 +88,4 @@ public class QuestProgress
 
     public string QuestID => quest.questID;
 }
+
